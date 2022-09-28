@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import PageTitle from '@/components/PageTitle'
 import generateRss from '@/lib/generate-rss'
 import { MDXLayoutRenderer } from '@/components/MDXComponents'
@@ -8,8 +9,9 @@ const DEFAULT_LAYOUT = 'PostLayout'
 
 export async function getStaticPaths() {
   const posts = getFiles('blog')
+  console.log('posts', posts.filter(p => ['.jpg', '.png'].indexOf(path.extname(p)) != -1).map(p => path.extname(p)));
   return {
-    paths: posts.map((p) => ({
+    paths: posts.filter(p => ['.md', '.mdx'].indexOf(path.extname(p)) != -1).map((p) => ({
       params: {
         slug: formatSlug(p).split('/'),
       },
