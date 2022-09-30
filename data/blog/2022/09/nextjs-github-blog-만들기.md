@@ -1,5 +1,5 @@
 ---
-title: 'next.js + github Blog 만들기'
+title: 'next.js + github 블로그 만들기'
 date: '2022-05-02'
 categories:
   - 'code'
@@ -8,16 +8,16 @@ tags:
   - 'github blog'
 ---
 
-트렌드에 맞춰 github 을 이용한 블로그를 만들어 보자.
-cms는 github를 이용하고 블로그 서비스는 next.js를 사용한다.
+트렌드에 맞춰 github 을 이용한 블로그를 만들어 보자.\
+cms는 github를 이용하고 블로그 서비스는 next.js를 사용한다.\
 적당한 next.js blog starter를 수정해서 만들어본다(많다;)
 
 ## 장단점
 
 - 장점
 
-1. github를 headless cms처럼 이용하고 서비스는 vercel를 이용하므로 지금처럼 별도로 서버호스팅을 할 필요가 없다.
-2. ssg로 서비스되는 만큼 wordpress 대비 훨씬 빠를듯
+1. github를 headless cms처럼 이용하고 서비스는 vercel를 이용하므로 지금처럼 별도로 서버호스팅(웹호스팅)을 할 필요가 없다.
+2. ssg로 서비스되는 만큼 wordpress 대비 훨씬 빠르다
 
 - 단점
 
@@ -31,11 +31,11 @@ cms는 github를 이용하고 블로그 서비스는 next.js를 사용한다.
 3. 새로운 블로그에 데이터 이관
 4. 블로그 프로그램 수정
 
-## 기존 wordpress 데이터 내려받기
+## 1. 기존 wordpress 데이터 내려받기
 
 wordpress 관리자 도구에서 export 한다.
 
-export 한 xml 으로 데이터를 끌어온다.
+\*export 한 xml 으로 데이터를 끌어온다.
 
 [wordpress-export-to-markdown](https://github.com/lonekorean/wordpress-export-to-markdown) 을 이용했는데.. wordpress에서도 md를 사용해서 그런건지 큰문제없이 끌어왔다.
 
@@ -56,7 +56,7 @@ export 한 xml 으로 데이터를 끌어온다.
       이미지2.jpg
 ```
 
-## next.js 블로그 만들기
+## 2. next.js 블로그 만들기
 
 [tailwind-nextjs-starter-blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) 을 이용하기로 했다.
 이름그대로 next.js와 tailwind css를 이용해서 만들어졌다. markdown, code highlighting 을 지원한다.
@@ -90,9 +90,9 @@ const siteMetadata = {
 }
 ```
 
-.env.example -> .env 복사한다.
+.env.example {'->'} .env 복사한다.
 
-_.env_ 나중에 giscus를 이용하려면 여기에 입력하면 된다.
+.env 나중에 giscus를 이용하려면 여기에 입력하면 된다.
 
 ```properties
 NEXT_PUBLIC_GISCUS_REPO=[repo]
@@ -129,7 +129,7 @@ EMAILOCTOPUS_LIST_ID=
 
 이제 github에 public repository를 만들어서 push 해보자.
 
-# 새로운 블로그에 데이터 이관
+# 3. 새로운 블로그에 데이터 이관
 
 wordpress-export-to-markdown 에서 내려받은 데이터를 data/blog 밑에 복사한다.
 새로고침하면 복사한 md들이 바로 보인다.
@@ -210,15 +210,19 @@ yarn copyimage을 하고 새로고침을 하면 이제 이미지들도 보일것
 yarn copyimage
 ```
 
-이관한 데이터와 수정파일 전부 commit해서 push한다.
+이제 이관한 데이터와 수정파일 전부 commit해서 push한다.
 
 vercel에서 github repository를 연결하면 웹서비스로 바로 볼 수 있다.
 
-https://note.heyo.me/blog/2022/02/3d%ED%94%84%EB%A6%B0%ED%84%B0-%EC%97%85%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%93%9C-%EA%B7%BC%ED%99%A9
-https://github.com/m320ng/blog-app/blob/master/data/blog/2022/02/3d%ED%94%84%EB%A6%B0%ED%84%B0-%EC%97%85%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%93%9C-%EA%B7%BC%ED%99%A9.mdx
+https://note.heyo.me/blog/2022/02/3d프린터-업그레이드-근황.mdx
+https://github.com/m320ng/blog-app/blob/master/data/blog/2022/02/3d프린터-업그레이드-근황.mdx.mdx
 
-## 블로그 프로그램 수정
+## 4. 블로그 프로그램 수정
 
-wordpress는 카테고리가 있었는데 여긴 없다. 추가해준다.
+기존에 wordpress 에 맞게 몇가지 수정한다. 안해도 상관없을듯;
+
+1. wordpress는 카테고리가 있었는데 여긴 없다. 추가해준다.
+2. 카테고리 memo는 전체 목록, 최근 목록에서 제외한다.
+3. 카테고리 메뉴를 추가한다.
 
 [수정한 github](https://github.com/m320ng/blog-app)
