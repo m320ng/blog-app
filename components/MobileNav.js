@@ -66,15 +66,32 @@ const MobileNav = () => {
         </div>
         <nav className="fixed mt-8 h-full">
           {headerNavLinks.map((link) => (
-            <div key={link.title} className="px-12 py-4">
-              <Link
-                href={link.href}
-                className="text-2xl font-bold tracking-widest text-gray-900 dark:text-gray-100"
-                onClick={onToggleNav}
-              >
-                {link.title}
-              </Link>
-            </div>
+            <>
+              <div key={link.title} className="px-12 py-4">
+                <Link
+                  href={link.href}
+                  className="text-2xl font-bold tracking-widest text-gray-900 dark:text-gray-100"
+                  onClick={onToggleNav}
+                >
+                  {link.title}
+                  {console.log('link', link)}
+                </Link>
+              </div>
+              {link.title == 'Categories' && (
+                <>
+                  {['code', 'hacking', 'tip', '3dprint', 'hardware', 'etc', 'memo'].map((cate) => (
+                    <div className="px-16 py-4" key={cate}>
+                      <Link
+                        class="text-xl font-bold tracking-widest text-gray-600 dark:text-gray-100"
+                        href={`/categories/${cate}`}
+                      >
+                        {cate}
+                      </Link>
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
           ))}
         </nav>
       </div>

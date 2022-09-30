@@ -33,7 +33,7 @@ export default function Home({ posts, categories }) {
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {!posts.length && 'No posts found.'}
+          {!posts.length && '포스트를 찾을 수 없습니다.'}
           {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {
             const { slug, date, title, summary, tags } = frontMatter
             return (
@@ -73,7 +73,7 @@ export default function Home({ posts, categories }) {
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read "${title}"`}
                         >
-                          Read more &rarr;
+                          더보기 &rarr;
                         </Link>
                       </div>
                     </div>
@@ -91,7 +91,7 @@ export default function Home({ posts, categories }) {
             className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
             aria-label="all posts"
           >
-            All Posts &rarr;
+            전체 포스트 &rarr;
           </Link>
         </div>
       )}

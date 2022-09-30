@@ -44,9 +44,9 @@ const LayoutWrapper = ({ children }) => {
             <MobileNav />
           </div>
         </header>
-        <ul className="flex">
+        <ul className="flex items-center text-base">
           {['code', 'hacking', 'tip', '3dprint', 'hardware', 'etc', 'memo'].map((cate) => (
-            <li className="mr-3" key={cate}>
+            <li className="hidden sm:block" key={cate}>
               <Link
                 class="inline-block rounded border border-white py-1 px-3 text-blue-500 hover:border-gray-200 hover:bg-gray-200"
                 href={`/categories/${cate}`}
@@ -55,7 +55,7 @@ const LayoutWrapper = ({ children }) => {
               </Link>
             </li>
           ))}
-          <li className="mr-3" key={'all'}>
+          <li className="hidden sm:block" key={'all'}>
             <Link
               class="inline-block rounded border border-blue-500 bg-blue-500 py-1 px-3 text-white"
               href="/blog"
