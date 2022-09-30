@@ -35,9 +35,20 @@ cms는 github를 이용하고 블로그 서비스는 next.js를 사용한다.\
 
 wordpress 관리자 도구에서 export 한다.
 
+![wordpress-export](images/wp_export.png)
+
 \*export 한 xml 으로 데이터를 끌어온다.
 
 [wordpress-export-to-markdown](https://github.com/lonekorean/wordpress-export-to-markdown) 을 이용했는데.. wordpress에서도 md를 사용해서 그런건지 큰문제없이 끌어왔다.
+
+받아서 실행한다.
+
+```bash
+git clone https://github.com/lonekorean/wordpress-export-to-markdown
+cd wordpress-export-to-markdown
+yarn
+node index.js
+```
 
 데이터 구조는 기존에 wordpress 구조대로 만들었다. 이미지는 글이 있는 month 아래에 images 밑에 생성되도록 했다.
 
@@ -132,6 +143,9 @@ EMAILOCTOPUS_LIST_ID=
 # 3. 새로운 블로그에 데이터 이관
 
 wordpress-export-to-markdown 에서 내려받은 데이터를 data/blog 밑에 복사한다.
+
+![복사된data](images/copy_data.png)
+
 새로고침하면 복사한 md들이 바로 보인다.
 
 추가한 md 데이터에 tags가 없는경우 에러가 나는데 에러나는 페이지마다 tags?로 수정해준다.
