@@ -1,17 +1,17 @@
 ---
-title: "doing 문서"
-date: "2020-10-05"
-categories: 
-  - "memo"
+title: 'doing 문서'
+date: '2020-10-05'
+categories:
+  - 'memo'
 ---
 
 # 서비스 구성
 
-1) 웹호스팅 환경 (cafe24)
+1. 웹호스팅 환경 (cafe24)
 
 php 7.3, mysql 5.3
 
-2) 주요 프레임워크
+2. 주요 프레임워크
 
 **Slim Framework 3**, Eloquent ORM **React**, Ant-design, Material-UI
 
@@ -21,7 +21,7 @@ php 7.3, mysql 5.3
 
 ## .htaccess 라우트 설정
 
-```
+```apacheconf
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
 </IfModule>
@@ -47,11 +47,8 @@ RewriteRule ^ front/index.html [L]
 [![](images/1.png)](http://note.heyo.me/wp-content/uploads/2020/10/1.png)
 
 1. 구분 1) 기본 : 모든 부품이 있는 온전한 뮤직박스 세트 2) 부분 : 일부 부품만 등록된 뮤직박스 (위 목록에서는 나무만 추가로 등록된 상황)
-    
 2. 등록 새로운 뮤직박스를 등록할경우 사용한다. (기본으로 등록됨)
-    
 3. 스테이지 추가 부분 부품을 추가 등록할경우에 사용한다. (부분으로 등록됨)
-    
 
 ## 뮤직박스 등록 (기본)
 
@@ -60,13 +57,9 @@ RewriteRule ^ front/index.html [L]
 [![](images/2.png)](http://note.heyo.me/wp-content/uploads/2020/10/2.png)
 
 1. 이름 고유 명칭이다. 조합코드에 이용된다. (예시 "서핑-서핑-서핑-서핑-서핑")
-    
 2. 썸네일이미지 완성된 뮤직박스의 썸네일이미지
-    
 3. 각층 썸네일이미지 부품을 선택할때 쓰이는 이미지
-    
 4. 각층 3D파일 부품의 3D파일 (glb, gltf)
-    
 
 모든 항목을 선택하고 저장한다.
 

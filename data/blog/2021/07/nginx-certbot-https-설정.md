@@ -1,16 +1,16 @@
 ---
-title: "docker 서비스시 nginx certbot https 설정"
-date: "2021-07-19"
-categories: 
-  - "code"
-tags: 
-  - "certbot"
-  - "nginx"
+title: 'docker 서비스시 nginx certbot https 설정'
+date: '2021-07-19'
+categories:
+  - 'code'
+tags:
+  - 'certbot'
+  - 'nginx'
 ---
 
 ## .well-known 작업
 
-```
+```nginx
 # my.domain.com
 server {
   listen 80;
@@ -25,14 +25,14 @@ server {
 
 ## 현재 작업폴더 기준
 
-```
-pwd 
+```bash
+pwd
 /home/ubuntu/webhome
 ```
 
 ## certbot 이미지를 이용해 등록
 
-```
+```bash
 sudo docker run -it --rm --name certbot \
 -v '/home/ubuntu/webhome/certbot/conf:/etc/letsencrypt' \
 -v '/home/ubuntu/webhome/certbot/logs:/var/log/letsencrypt' \
@@ -42,7 +42,7 @@ certbot/certbot certonly --webroot --webroot-path=/var/www/certbot --email 이�
 
 ## ssl 반영
 
-```
+```nginx
 # my.domain.com
 server {
   listen 80;
@@ -63,7 +63,7 @@ server {
 
 ## 명령어 목록
 
-```
+```bash
 # 등록
 sudo docker run --rm --name certbot \
 -v '/home/ubuntu/webhome/certbot/conf:/etc/letsencrypt' \

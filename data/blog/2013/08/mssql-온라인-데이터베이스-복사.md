@@ -1,23 +1,23 @@
 ---
-title: "mssql 온라인 데이터베이스 복사"
-date: "2013-08-10"
-categories: 
-  - "memo"
-tags: 
-  - "mssql"
+title: 'mssql 온라인 데이터베이스 복사'
+date: '2013-08-10'
+categories:
+  - 'memo'
+tags:
+  - 'mssql'
 ---
 
-```
+```sql
 RESTORE DATABASE ycpqc_20200916 FROM DISK = N'd:\backup\ycpqc.bak'
-WITH FILE = 1, 
-MOVE N'insave' TO N'd:\MSSQL_DATA\ycpqc_20200916.mdf', 
-MOVE N'insave_log' TO N'd:\MSSQL_DATA\ycpqc_20200916_log.ldf', 
-NOUNLOAD, 
-REPLACE, 
+WITH FILE = 1,
+MOVE N'insave' TO N'd:\MSSQL_DATA\ycpqc_20200916.mdf',
+MOVE N'insave_log' TO N'd:\MSSQL_DATA\ycpqc_20200916_log.ldf',
+NOUNLOAD,
+REPLACE,
 STATS = 10
 GO
 
-ALTER DATABASE 디비명 
+ALTER DATABASE 디비명
 
 ALTER DATABASE 디비명 SET OFFLINE WITH NO_WAIT
 

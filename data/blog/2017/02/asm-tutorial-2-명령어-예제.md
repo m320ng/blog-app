@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (2) 디버거"
-date: "2017-02-10"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (2) 디버거'
+date: '2017-02-10'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 1.6. 디버거 설치
@@ -109,7 +109,7 @@ download 를 누르면 날짜별로 스냅샷이 있는데 최신을 다운받�
 
 위의 `helloworld.exe`는 아래의 어셈블리 소스를 컴파일해서 만든 파일이다.
 
-```x86asm
+```nasm
 .data
 szHelloWorld        byte "hello world",0
 
@@ -135,7 +135,7 @@ end start
 
 ```avrasm
 위치주소  | 기계어         | 어셈블리
-00401000 | 68 00 30 40 00 | push helloworld.00403000 
+00401000 | 68 00 30 40 00 | push helloworld.00403000
 ; helloworld은 무시해도된다. 00403000 메모리주소가 helloworld프로그램 영역이라는 일종의 도움말이다.
 ```
 

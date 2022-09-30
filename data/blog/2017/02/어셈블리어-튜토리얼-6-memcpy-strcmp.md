@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (6) memcpy, strcmp"
-date: "2017-02-16"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (6) memcpy, strcmp'
+date: '2017-02-16'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 2.2. memcpy, strcpy, strcmp
@@ -19,7 +19,7 @@ tags:
 
 이 소스를 설명하며 **함수선언**과 몇가지 추가적인 명령어를 보도록 할 것이다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap :none
@@ -93,7 +93,7 @@ c언어에서 이렇게 선언한 것과 동일하다. c언어에서 이렇게 �
 
 `buff db 50 dup(0)` 마찬가지로 전역변수이고 `byte배열` 이다. 새로나오는 표현식 `50 dup(0)`이 보이는데 배열의 수가 50개이고 값은 0으로 채우라는 뜻이다.
 
-```x86asm
+```nasm
 buff db 0,0,0,0,0,0,0, ..생략.. 0,0,0,0,0,0,0,0,0,0
 ; 이렇게 0을 50개 쓴것과 동일하다.
 ```
@@ -120,7 +120,7 @@ void memcpy (void* lpSrc, void* lpDst, int count) {
 
 이렇게 되어있다. c언어에서는 `void*` 이런것과 같은 type이 중요하고 다양한 type에 맞춰서 casting을 해야 하는데 asm에서는 큰 의미가 없다. 위에서도 32bit(4byte) 데이터형인 dword로 모두 받고 있다.
 
-```x86asm
+```nasm
 push esi
 push edi
 push ecx
@@ -138,7 +138,7 @@ pop esi
 
 이 부분은 좀 더 편하게 정의할 수도 있는데 다음에 정의된 함수 `memcpy2`의 선언을 보면
 
-```x86asm
+```nasm
 memcpy2 proc uses esi edi ecx, lpSrc:dword, lpDst:dword, count:dword
 ```
 
@@ -146,7 +146,7 @@ memcpy2 proc uses esi edi ecx, lpSrc:dword, lpDst:dword, count:dword
 
 다시 memcpy 함수를 이어서 보자.
 
-```x86asm
+```nasm
 mov esi, lpSrc
 mov edi, lpDst
 mov ecx, count
@@ -164,7 +164,7 @@ ecx 에는 count 가 들어간다. 뒤에 나오는 명령어 `loop` 에 사용�
 
 `@B`는 현재위치에서 위쪽의 `@@`라벨로 이동한다. `@F`는 현재위치에서 아래쪽의 `@@`라벨로 이동한다.
 
-```x86asm
+```nasm
 mov al, byte ptr [esi]  ; esi메모리 위치의 값을 al로 복사
 ```
 
@@ -172,14 +172,14 @@ mov al, byte ptr [esi]  ; esi메모리 위치의 값을 al로 복사
 
 ```
 메모리주소 | 헥스                                            | ascii
-00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....  
+00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....
 ```
 
 이렇게 메모리가 있고 `esi` 가 `00403000` 라고 한다면 (실제로 아마 memcpy.exe를 디버깅해보면 esi는 전역변수 szHelloWorld 의메모리주소인 00403000 가 맞을 것이다)
 
 `byte ptr [esi]` 는 1byte 값인 68 이 된다. `word ptr [esi]` 는 2byte 값인 68 65 가 된다. `dword ptr [esi]` 는 4byte 값인 68 65 6C 6C 가 된다.
 
-그리고 전에 잠시 설명한 _little endian_에 따라 4byte의 68 65 6C 6C 값을 정수 `dword`로 표현하면 거꾸로 뒤집어서 6C 6C 65 68 가 된다.
+그리고 전에 잠시 설명한 *little endian*에 따라 4byte의 68 65 6C 6C 값을 정수 `dword`로 표현하면 거꾸로 뒤집어서 6C 6C 65 68 가 된다.
 
 실제 이 값의 10진수값을 알려면 위도우 계산기(프로그래머모드)에서 16진수로 입력해보면
 
@@ -189,11 +189,11 @@ mov al, byte ptr [esi]  ; esi메모리 위치의 값을 al로 복사
 
 byte 가 거꾸로 기술된다는게 헷갈릴 수 있는데 반대 예를 한번 보자.
 
-```x86asm
+```nasm
 mov dword ptr [esi], 1 ; dword 값 1을 쓴다면
 
 메모리주소 | 헥스                                            | ascii
-00403000  | 01 00 00 00 6F 20 77 6F 72 6C 64 00 00 00 00 00 | ....o world.....  
+00403000  | 01 00 00 00 6F 20 77 6F 72 6C 64 00 00 00 00 00 | ....o world.....
 
 00 00 00 01 이 거꾸로 쓰여져 01 00 00 00 이렇게 된다.
 ```
@@ -214,14 +214,14 @@ edi 의 메모리위치 (0040300C) 에 al 의 값 1byte 를 복사한다. (위�
 
 ```
 메모리주소 | 헥스                                            | ascii
-00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....  
+00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....
 
-0040300C  | 68 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | h...............  
+0040300C  | 68 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | h...............
 ```
 
 `al` 의 값 `68 (아스키값 'h')` 이 edi 메모리위치에 복사되었다.
 
-```x86asm
+```nasm
 inc esi
 inc edi
 ```
@@ -238,9 +238,9 @@ ecx 가 12 라면 12번을 반복할 것이고 esi 는 `0040300B` 까지 edi 는
 
 ```
 메모리주소 | 헥스                                            | ascii
-00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....  
+00403000  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....
 
-0040300C  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....  
+0040300C  | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world.....
 ```
 
 최종적으로 이렇게 되고 loop 를 벗어난다.
@@ -255,7 +255,7 @@ ecx 가 12 라면 12번을 반복할 것이고 esi 는 `0040300B` 까지 edi 는
 
 먼저 `movsb` 이 명령어는
 
-```x86asm
+```nasm
 mov al, byte ptr [esi]
 mov byte ptr [edi], al
 inc esi
@@ -268,7 +268,7 @@ inc edi
 
 `movsb` 의 맨끝에 `b` 는 byte를 의미하는 것으로 `movsw, movsd` 도 존재한다. 당연히 w는 word, d는 dword 이다.
 
-```x86asm
+```nasm
 mov ax, word ptr [esi]
 mov word ptr [edi], ax
 add esi,2
@@ -284,7 +284,7 @@ add edi,4
 
 마찬가지로 위의 코드를 정확하게 대체 할 수 있다. 이것을 활용해서
 
-```x86asm
+```nasm
 mov esi, 메모리주소1
 mov edi, 메모리주소2
 movsd
@@ -304,7 +304,7 @@ movsb
 
 문자열을 복사하는 프로그램이다. memcpy와 비슷하지만 문자열이기 복사할 크기를 지정하지 않고 문자열의 끝을 인식해서 복사한다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap :none
@@ -368,7 +368,7 @@ end start
 
 이런 제어문 지시어들은 cmp와 jmp(or loop)등를 이용해서 어렵게 코딩을 하지 않도록 도와준다.
 
-```x86asm
+```nasm
     jmp ENDW
 STARTW:
     mov al, byte ptr [esi+ecx]
@@ -385,7 +385,7 @@ ENDW:
 
 위에서본 memcpy 와 거의 흡사한데 차이점은 위에서는 esi를 직접 증가시켰다면 여기서는 esi는 그대로고 ecx를 0부터 1씩증가해서 esi+ecx로 표현했다는 점이다.
 
-```x86asm
+```nasm
 mov eax, ecx
 ```
 
@@ -397,7 +397,7 @@ mov eax, ecx
 
 문자열에 특정 문자열을 포함하는지 체크하는 프로그램이다. 위의 두 프로그램과 거의 비슷하다. 함수를 쉽게 호출 할 수 있는 **invoke**를 설명한다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap :none
@@ -454,7 +454,7 @@ start:
     push offset crlf
     call crt_printf
 
-    ; 문자열 수 
+    ; 문자열 수
     push offset szHelloWorld
     call strlen
     mov len, eax
@@ -504,7 +504,7 @@ end start
 
 szHelloWorld 변수 "hello world" 에 szFind1 "hell", szFind2 "heven"이 포함되는지의 여부를 확인하는 코드이다. szFind1 는 포함되고 szFind2 는 포함되지 않을 것이다.
 
-```x86asm
+```nasm
 .data?
 buff            db 50 dup(?)
 len         dd ?
@@ -518,10 +518,10 @@ movsb 와 달리 자주쓰지는 않으니 꼭 기억 할 필요는 없을거 �
 
 `cmpsb` 는 esi 메모리위치의 1byte 값과 edi 메모리위치의 1byte 값을 비교하고 1byte 전진한다.
 
-```x86asm
+```nasm
 cmp byte ptr [esi], byte ptr [edi] ; flag들에 비교결과값 설정
-inc esi 
-inc edi 
+inc esi
+inc edi
 ; 이것과 동일하다고 볼 수 있다.
 ```
 
@@ -535,7 +535,7 @@ inc edi
 
 ecx가 0이면 주어진 횟수가 모두 반복된것이므로 모두 일치하다고 판단할 수 있고 0보다 크면 일치하지 않는다고 판단할 수 있다.
 
-```x86asm
+```nasm
 .if eax == 0
     push offset szFound
     call crt_printf
@@ -547,7 +547,7 @@ ecx가 0이면 주어진 횟수가 모두 반복된것이므로 모두 일치하
 
 if else 구문이다. 제어문을 쉽게 작성 할 수 있도록 도와준다.
 
-```x86asm
+```nasm
 invoke crt_printf, offset crlf
 invoke crt_printf, offset szFind2
 invoke strcmp, offset szHelloWorld, offset szFind2

@@ -1,15 +1,15 @@
 ---
-title: "자동db백업 ftp bat배치"
-date: "2013-08-10"
-categories: 
-  - "code"
-tags: 
-  - "bat"
+title: '자동db백업 ftp bat배치'
+date: '2013-08-10'
+categories:
+  - 'code'
+tags:
+  - 'bat'
 ---
 
 자동db백업 ftp bat배치
 
-```
+```bat
 @echo off
 set yy=%date:~0,4%
 set mm=%date:~5,2%

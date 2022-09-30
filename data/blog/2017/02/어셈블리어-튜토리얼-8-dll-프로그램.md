@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (8) DLL 프로그램"
-date: "2017-02-23"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (8) DLL 프로그램'
+date: '2017-02-23'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 2.4. DLL
@@ -21,7 +21,7 @@ tags:
 
 앞서 설명한 윈도우 프로그램이다. 바뀐부분은 gdi32.inc, gdi32.lib 를 include하지 않고 직접 **gdi32.dll** 에서 함수주소를 얻어서 사용하도록 바꿔보았다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -96,14 +96,14 @@ WinMain proc, hInstance:HINSTANCE, lpCmdLine:LPSTR
     invoke RegisterClassEx, addr wc
 
     ; 윈도우 생성
-    invoke CreateWindowEx, NULL, 
-        addr szClass, 
-        addr szCaption, 
-        WS_OVERLAPPEDWINDOW, 
-        0, 0, 320, 240, 
-        NULL, 
-        NULL, 
-        hInstance, 
+    invoke CreateWindowEx, NULL,
+        addr szClass,
+        addr szCaption,
+        WS_OVERLAPPEDWINDOW,
+        0, 0, 320, 240,
+        NULL,
+        NULL,
+        hInstance,
         NULL
 
     ; 메세지 펌프 (WndProc가 계속 실행된다고 이해하면 된다)
@@ -178,7 +178,7 @@ end start
 
 `invoke LoadLibrary, addr szGdiDll` api 함수 **LoadLibrary**를 이용하여 `gdi32.dll`의 핸들값을 얻어온다. 이후에 이 핸들값은 함수주소를 얻을때 사용한다.
 
-```x86asm
+```nasm
 invoke GetProcAddress, hGdiDll, addr szGetStockObject
 mov lpGetStockObject, eax
 ```
@@ -197,7 +197,7 @@ DLL에서 노출하는 함수는 기본적으로 stdcall 함수콜 방식을 사
 
 link에서 exe파일을 만들때 DLL임을 명시하고 노출되는 함수를 명시한다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -240,7 +240,7 @@ end DllEntry
 
 `DllEntry proc hInstance:HINSTANCE, reason:DWORD, reserved1:DWORD` 처음 호출되는 함수이다. `reason` 으로 DLL이 로드될 때와 언로드될 때를 구분한다.
 
-여기서는 로드될때 (DLL\_PROCESS\_ATTACH) 간단하게 메세지박스를 띄워보았다. MessageBox api 함수가 메세지박스를 띄우는 함수이다.
+여기서는 로드될때 (DLL_PROCESS_ATTACH) 간단하게 메세지박스를 띄워보았다. MessageBox api 함수가 메세지박스를 띄우는 함수이다.
 
 `SetVictim proc, lpszVictim:dword` SetVictim 라는 함수를 정의했다. 노출시키고자하는 함수이지만 소스상에서는 일반함수와 차이점이 없다.
 

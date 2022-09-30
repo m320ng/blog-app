@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (11) api hooking (Trampoline)"
-date: "2017-03-16"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (11) api hooking (Trampoline)'
+date: '2017-03-16'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 이번엔 **Trampoline** 기법을 이용한 api hooking을 살펴보도록 하겠다.
@@ -17,7 +17,7 @@ tags:
 
 5byte patch 라고도 한다. 32비트 프로그램에서 함수의 시작부분은 거의 항상
 
-```x86asm
+```nasm
 mov edi, edi
 push ebp
 mov ebp, esp
@@ -25,7 +25,7 @@ mov ebp, esp
 
 이렇게 시작하는데 이 부분이 기계어로 정확히 5byte이다.
 
-```x86asm
+```nasm
 jmp 메모리주소
 ```
 
@@ -41,7 +41,7 @@ IAT를 수정하는 방법에 비교해 이 방법은 장점이 몇가지 더 �
 
 예를들어 **인터넷익스플로러**(iexplore.exe)에서 **post값을 중간에서 가로채기위해서** `wininet.dll`의 `HttpSendRequest` 를 후킹한다고 생각해보자 (실제로 다음다음 예제로 다룰것이다.)
 
-HttpSendRequest 의 정보는 [여기서](https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa384247(v=vs.85).aspx) 확인할수있다. post로 값을 전송할때 사용한다.
+HttpSendRequest 의 정보는 [여기서](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa384247(v=vs.85).aspx>) 확인할수있다. post로 값을 전송할때 사용한다.
 
 IAT수정을 사용한다고 했을 때에는 `iexplore.exe` 에서 wininet.dll의 HttpSendRequest api를 직접 사용하지 않으므로 import하여 사용하는 모듈이 어느곳인지 찾아야한다. 찾아보면 urlmon.dll에서 사용한다. 이런식으로 정확하게 어느모듈에서 import하는지 찾아야하는 번거로움이 있다.
 
@@ -61,7 +61,7 @@ IAT수정과 달리 Trampoline 이라는 방법은 API 함수자체를 수정하
 
 이전 IAT예제와 동작하는 기능은 같다. MessageBox를 Trampoline기법으로 api hooking하여 메세지박스를 호출했을 때 어떤 버튼을 눌러도 항상 cancel로 동작하게 한다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -236,15 +236,15 @@ end DllEntry
 
 앞의 예제와 거의 비슷하다. **LoadApiHook 함수설명**과 **MyMessageBoxW 함수**가 어떻게 달라졌는지만 중점적으로 설명하도록 하겠다.
 
-```x86asm
+```nasm
 ProtectMemCopy proto, lpSrc:dword, lpDst:dword, count:dword, isExecute:dword
 ```
 
-메모리복사 함수이다. 예전에 memcpy 예제처럼 메모리를 복사한다. 다만 주로 읽기전용의 메모리를 쓰게 될 것이기 때문에 [VirtualProtect](https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366898(v=vs.85).aspx)를 이용해서 메모리 보호모드를 `READWRITE` 로 변경후에 복사한다. 복사후에는 다시 원래의 보호모드로 복구한다.
+메모리복사 함수이다. 예전에 memcpy 예제처럼 메모리를 복사한다. 다만 주로 읽기전용의 메모리를 쓰게 될 것이기 때문에 [VirtualProtect](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366898(v=vs.85).aspx>)를 이용해서 메모리 보호모드를 `READWRITE` 로 변경후에 복사한다. 복사후에는 다시 원래의 보호모드로 복구한다.
 
 lpSrc 원본주소, lpDst 대상주소, count 복사할 수, isExecute 실행영역여부
 
-```x86asm
+```nasm
 LoadApiHook proto, lpszDll:dword, lpszProc:dword, lpTossProc:dword, lpTossJMP:dword
 ```
 
@@ -254,7 +254,7 @@ lpszDll DLL명, lpszProc API함수명, lpTossProc 대신할 함수주소, lpToss
 
 ProtectMemCopy부터 설명하겠다.
 
-```x86asm
+```nasm
 invoke VirtualQuery, lpDst, addr mbi, sizeof mbi
 mov ecx, mbi.Protect
 and ecx, not PAGE_READONLY
@@ -272,7 +272,7 @@ and ecx, not PAGE_EXECUTE_READ
 
 LoadApiHook를 살펴보자.
 
-```x86asm
+```nasm
 local lpOrgProc:dword
 local StubOrg[5]:byte
 local StubHook[5]:byte
@@ -287,7 +287,7 @@ StubHook는 덮어쓸 jmp 구문이다. 여러가지 jmp 구문이 있지만 여
 
 OrgJmpStub는 마지막에 다시 `API함수주소+5` 로 점프하는 jmp 구문이다. 여기서도 E9 opcode를 이용한다.
 
-```x86asm
+```nasm
 ; Hook 함수로 점프하는 stub
 mov eax, lpTossProc
 sub eax, lpOrgProc
@@ -307,14 +307,14 @@ StubHook에 jmp문을 만든다. jmp문 E9 opcode는 어디든 점프할수 있�
 
 `mov dword ptr [esi + 1], eax` 위에서 구한 상대값(DWORD)을 E9 옆에 복사한다.
 
-```x86asm
+```nasm
 ; 원본 stub 깔기
 invoke ProtectMemCopy, addr StubOrg, lpTossJMP, 5, 1
 ```
 
 MyMessageBoxW가 호출되고 이어서 실행되기위해 MyMessageBoxWJMP위치에(MyMessageBoxW 바로밑) 함수의 원래의 5byte를 복사한다. (mov edi,edi/push ebp/mov ebp,esp)
 
-```x86asm
+```nasm
 ; 원본 함수로 점프하는 stub
 mov eax, lpOrgProc
 sub eax, lpTossJMP
@@ -326,7 +326,7 @@ mov dword ptr [esi + 1], eax
 
 앞서 만든 jmp구문과 비슷하다. `원래의 API함수 + 5` 위치로 점프하는 구문을 만든다.
 
-```x86asm
+```nasm
 mov esi, lpTossJMP
 add esi, 5
 invoke ProtectMemCopy, addr OrgJmpStub, esi, 5, 1
@@ -336,19 +336,19 @@ invoke ProtectMemCopy, addr OrgJmpStub, esi, 5, 1
 
 이제 MyMessageBoxWJMP를 호출하면 정확하게 원래의 API가 동작하게 된다.
 
-```x86asm
+```nasm
 MyMessageBoxWJMP:
 mov edi,edi
 push ebp
 mov ebp, esp
-jmp MessageBoxW주소 + 5 
+jmp MessageBoxW주소 + 5
 ```
 
 결과적으로 MyMessageBoxWJMP의 nop들은 위와같이 변경된다.
 
 마지막으로 api hooking 함수 MyMessageBoxW 를 살펴보자
 
-```x86asm
+```nasm
 ; hook functions
 MyMessageBoxW proc
 ; naked 함수다. MyMessageBoxW: 를 써도 무방하다.
@@ -372,7 +372,7 @@ MyMessageBoxW 함수는 파라메터등을 전혀 설정하지 않는다. 이것
 
 MyMessageBoxW 함수에서 아무일도 하지 않으면
 
-```x86asm
+```nasm
 MyMessageBoxW proc
 ; 아무것도 하지 않는다.
 MyMessageBoxW endp

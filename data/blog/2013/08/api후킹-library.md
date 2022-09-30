@@ -1,10 +1,10 @@
 ---
-title: "API후킹 Library"
-date: "2013-08-10"
-categories: 
-  - "code"
-tags: 
-  - "assembly"
+title: 'API후킹 Library'
+date: '2013-08-10'
+categories:
+  - 'code'
+tags:
+  - 'assembly'
 ---
 
 예전 언젠가 작성했던 글 Trampoline 후킹을 어셈으로 구현한거 같은데..
@@ -13,7 +13,7 @@ tags:
 
 C++ 로 구현한것도 있을텐데 그게 보기 더 편할거 같다.
 
-```
+```nasm
 #!asm
 ; apihook frame
 ;
@@ -87,7 +87,7 @@ pListHookProc    dword ?
  byte 57h    ; push edi
  byte 52h    ; push edx
  byte 8Bh,0D0h   ; mov edx, eax
- byte 0B8h    ; mov eax, 
+ byte 0B8h    ; mov eax,
 @HookFunctionSkelStruct1:
  dword 0     ; [HookStruct]
  byte 8Dh,70h,10h  ; lea esi, dword ptr [eax + 16]
@@ -107,7 +107,7 @@ pListHookProc    dword ?
  byte 50h    ; push eax
  byte 56h    ; push esi
  byte 57h    ; push edi
- byte 0B8h    ; mov eax, 
+ byte 0B8h    ; mov eax,
 @HookFunctionSkelStruct2:
  dword 0     ; [HookStruct]
  byte 8Dh,70h,15h  ; lea esi, dword ptr [eax + 21]
@@ -176,7 +176,7 @@ LoadHookFunctionList proc
   .if eax==0
    jmp LoadHookFunctionListExit
   .endif
- .endif 
+ .endif
 
  mov pstrDll, offset ListHookDll
  mov pstrProc, offset ListHookProc
@@ -236,7 +236,7 @@ RemoveHookFunctionList proc uses esi edi ebx
   .endw
  .endif
 
- .if bUserDefineDll==1 && hUserDefineDll!=0 
+ .if bUserDefineDll==1 && hUserDefineDll!=0
   invoke FreeLibrary, hUserDefineDll
  .endif
 RemoveHookFunctionListExit:
@@ -409,7 +409,7 @@ AddTarget proc, pstrTarget:dword
  mov pListTarget, eax
 
  xor eax, eax
- inc eax 
+ inc eax
 AddTargetExit:
  ret
 AddTarget endp

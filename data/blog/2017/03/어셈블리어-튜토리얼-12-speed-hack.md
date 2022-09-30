@@ -1,16 +1,16 @@
 ---
-title: "어셈블리어 튜토리얼 (12) speed hack"
-date: "2017-03-20"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
-  - "speedhack"
-  - "스패드핵"
+title: '어셈블리어 튜토리얼 (12) speed hack'
+date: '2017-03-20'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
+  - 'speedhack'
+  - '스패드핵'
 ---
 
 ## 3.5. speed hack
@@ -65,7 +65,7 @@ delta time에 관련된 api는 결국 시간을 측정하는 api인데 대표적
 
 게임에따라 다르겠지만 대부분 적용이 가능할것이다.
 
-QuaterPerfomanceCounter를 이용해서 시간을 구하는 방법은 QuaterPerfomanceCounter로 구한 값을 QueryPerformanceFrequency로 구한 값으로 나누어주면된다. 자세한 내용은 [여기](https://msdn.microsoft.com/ko-kr/library/windows/desktop/ms644904(v=vs.85).aspx)(MSDN)에서 확인가능하다.
+QuaterPerfomanceCounter를 이용해서 시간을 구하는 방법은 QuaterPerfomanceCounter로 구한 값을 QueryPerformanceFrequency로 구한 값으로 나누어주면된다. 자세한 내용은 [여기](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/ms644904(v=vs.85).aspx>)(MSDN)에서 확인가능하다.
 
 ```
 counter / frequency = 시간
@@ -83,7 +83,7 @@ counter / frequency = 시간
 
 앞서봤던 trampoline 예제와 똑같다. MessageBoxW대신 QuaterPerfomanceCounter를 후킹한다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -324,7 +324,7 @@ push [eax+4]
 call MyQueryPerformanceCounterJMP
 ```
 
-원래의 API QueryPerformanceCounter를 호출한다. 파라메터가 하나뿐이니 `esp`를 직접사용해도 상관없겠다. `push [esp+4]` 여기서 파라메터는 LARGE\_INTEGER 구조체가 있는 주소값이다.
+원래의 API QueryPerformanceCounter를 호출한다. 파라메터가 하나뿐이니 `esp`를 직접사용해도 상관없겠다. `push [esp+4]` 여기서 파라메터는 LARGE_INTEGER 구조체가 있는 주소값이다.
 
 ```
 .if eax==1
@@ -347,9 +347,9 @@ ret 4
 
 `push ecx` `ecx`를 사용하기위해서 원래의 값을 백업해둔다. 값을 수정하기위해 eax과 ecx를 사용할 것이다.
 
-`mov ecx, [eax+4]` 파라메터값(LARGE\_INTEGER 구조체가 있는 주소값)을 `ecx`에 복사한다.
+`mov ecx, [eax+4]` 파라메터값(LARGE_INTEGER 구조체가 있는 주소값)을 `ecx`에 복사한다.
 
-`mov eax, [ecx+4]` LARGE\_INTEGER구조체의 2번째 DWORD값을 `eax`에 복사한다.
+`mov eax, [ecx+4]` LARGE_INTEGER구조체의 2번째 DWORD값을 `eax`에 복사한다.
 
 `shl eax, 2` 시프트(왼쪽) 명령어이다. C에서는 표현하면 아래와같다.
 
@@ -367,7 +367,7 @@ mul 4
 
 같은의미가 된다. `mul`명령어는 eax의 값을 계산하여 eax에 넣어준다.
 
-`mov [ecx+4], eax` 곱한값을 LARGE\_INTEGER구조체의 2번째 DWORD에 넣어준다.
+`mov [ecx+4], eax` 곱한값을 LARGE_INTEGER구조체의 2번째 DWORD에 넣어준다.
 
 ```
 mov eax, [ecx]
@@ -375,7 +375,7 @@ shl eax, 2
 mov [ecx], eax
 ```
 
-위의 작업 반복이다. LARGE\_INTEGER구조체의 1번째 DWORD값을 4배한다.
+위의 작업 반복이다. LARGE_INTEGER구조체의 1번째 DWORD값을 4배한다.
 
 `pop ecx` ecx값을 복구한다.
 

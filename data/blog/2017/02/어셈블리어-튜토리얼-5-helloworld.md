@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (5) HelloWorld"
-date: "2017-02-13"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (5) HelloWorld'
+date: '2017-02-13'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 # 2\. 기초 튜토리얼
@@ -23,7 +23,7 @@ tags:
 
 **helloworld.asm**
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap :none
@@ -66,7 +66,7 @@ end start
 
 `option casemap :none` 이 지시어는 변수 함수의 대소문자를 감지하게 해준다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap :none
@@ -104,16 +104,16 @@ szHelloWorld db "hello world",0 ; 이렇게 선언할 수 도 있다.
 
 이렇게 문자열형식으로 "으로 묶을 수도 있고 ,로 붙일 수 도 있다. 모두 배열을 표현하는 방식이라고 생각하면된다.
 
-```x86asm
+```nasm
 szHelloWorld db "hello world",0
 szHelloWorld db "h","e","l","l","o"," ","w","o","r","l","d",0 ; 문자 하나하나 ,로
-szHelloWorld db 68h,65h,6Ch,6Ch,6Fh,20h,77h,6Fh,72h,6Ch,64h,0 ; 16진수 
+szHelloWorld db 68h,65h,6Ch,6Ch,6Fh,20h,77h,6Fh,72h,6Ch,64h,0 ; 16진수
 ; 모두 같은 값을 나타낸다.
 
 ; szHelloWorld 의 메모리 주소값이 00403000라면
 ; 메모리 덤프창에서 확인해보면 아래와 같다.
 주소     | hex                                             | ascii
-00403000 | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world  
+00403000 | 68 65 6C 6C 6F 20 77 6F 72 6C 64 00 00 00 00 00 | hello world
 ```
 
 `.code`이 지시어 아래부터는 어셈블리 명령어가 들어가는 영역이다. 앞서말한 `.data`는 .data섹션에 들어가는데 `.code`는 .text섹션에 들어간다.
@@ -124,7 +124,7 @@ szHelloWorld db 68h,65h,6Ch,6Ch,6Fh,20h,77h,6Fh,72h,6Ch,64h,0 ; 16진수
 
 이 라벨을 이용해서 라벨위치의 메모리주소를 구할 수 도 있다.
 
-```x86asm
+```nasm
 mov eax, offset start
 ```
 
@@ -136,11 +136,11 @@ mov eax, offset start
 
 이미 이전에 많이 봤던 명령어일 것이다. 전역변수 `szHelloWorld`의 메모리주소를 스택메모리에 `push` 한다. 뒤에 나오는 함수의 파라메터로써 push 된 것이다.
 
-`call crt_printf` crt\_printf 함수를 호출한다. msvcrt.dll에 있는 함수로 콘솔에 문자열을 출력해주는 함수이다. 첫번째 파라메터로 `szHelloWorld`를 입력하였다.
+`call crt_printf` crt_printf 함수를 호출한다. msvcrt.dll에 있는 함수로 콘솔에 문자열을 출력해주는 함수이다. 첫번째 파라메터로 `szHelloWorld`를 입력하였다.
 
 "hello world"가 콘솔창에 출력될 것 이다.
 
-```x86asm
+```nasm
 push 0
 call ExitProcess
 ```

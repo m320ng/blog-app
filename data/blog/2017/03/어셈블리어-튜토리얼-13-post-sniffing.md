@@ -1,21 +1,21 @@
 ---
-title: "어셈블리어 튜토리얼 (13) post sniffing"
-date: "2017-03-21"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
-  - "sniffing"
-  - "패스워드"
+title: '어셈블리어 튜토리얼 (13) post sniffing'
+date: '2017-03-21'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
+  - 'sniffing'
+  - '패스워드'
 ---
 
 ## 3.6. post sniffing
 
-이번엔 post 값을 중간에서 가로채는 예제를 만들어보겠다. 윈도우 api 중 post 값을 서버에 전송하는 api는 wininet.dll 의 [HttpSendRequest](https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa384247(v=vs.85).aspx)가 있다. 이 api를 후킹하면 post값을 가로챌 수 있다.
+이번엔 post 값을 중간에서 가로채는 예제를 만들어보겠다. 윈도우 api 중 post 값을 서버에 전송하는 api는 wininet.dll 의 [HttpSendRequest](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa384247(v=vs.85).aspx>)가 있다. 이 api를 후킹하면 post값을 가로챌 수 있다.
 
 ```c
 BOOL HttpSendRequest(
@@ -33,7 +33,7 @@ BOOL HttpSendRequest(
 
 HttpSendRequest를 후킹해서 post값을 log.txt파일에 기록하는 소스이다. 텍스트파일에 기록하는 함수만 추가되었다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -295,7 +295,7 @@ log.txt 파일에 문자열을 기록하는 함수이다. `lpBuffer` 문자열 �
 
 LogSecurity 함수내용은 기본적으로 파일쓰기 windows api를 이용한거니 그냥 훑어보면 되겠다.
 
-```x86asm
+```nasm
 MyHttpSendRequestW proc
     mov eax, esp
     push ebx
@@ -304,11 +304,11 @@ MyHttpSendRequestW proc
 
 `ebx`를 쓰기위해 `esp`를 `eax` 에 값을 복사하고 `ebx`를 백업한후에 `ebx`에 `eax`값을 복사한다.
 
-```x86asm
+```nasm
 invoke WideCharToMultiByte, CP_ACP, 0, [ebx+8], -1, addr szHeader, 512, NULL, NULL
 ```
 
-HttpSendRequestW 이기때문에 문자열이 `wide string`형태이다. [WideCharToMultiByte](https://msdn.microsoft.com/ko-kr/library/windows/desktop/dd374130(v=vs.85).aspx)는 일반적인 바이트문자열로 변경하는 함수이다.
+HttpSendRequestW 이기때문에 문자열이 `wide string`형태이다. [WideCharToMultiByte](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/dd374130(v=vs.85).aspx>)는 일반적인 바이트문자열로 변경하는 함수이다.
 
 결과
 

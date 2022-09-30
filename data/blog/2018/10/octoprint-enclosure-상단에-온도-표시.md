@@ -1,11 +1,11 @@
 ---
-title: "OctoPrint-Enclosure 상단에 온도 표시"
-date: "2018-10-02"
-categories: 
-  - "3dprint"
-tags: 
-  - "octoprint-enclosure-온도"
-  - "octoprint-enclosure-navi"
+title: 'OctoPrint-Enclosure 상단에 온도 표시'
+date: '2018-10-02'
+categories:
+  - '3dprint'
+tags:
+  - 'octoprint-enclosure-온도'
+  - 'octoprint-enclosure-navi'
 ---
 
 OctoPrint-Enclosure는 상단바에 버튼을 클릭해야만 내부 온도를 확인 할 수 있는데
@@ -20,13 +20,13 @@ ssh(putty)로 octoprint에 접속한다.
 
 octoprint 프로그램 경로로 이동한다.
 
-```
+```bash
 cd ~/oprint/lib/python2.7/site-packages/octoprint/static/js/lib
 ```
 
 자바스크립트 파일을 수정한다.
 
-```
+```bash
 nano less.min.js
 (혹은 vi less.min.js)
 ```
@@ -35,16 +35,19 @@ nano less.min.js
 
 ```
 ;
-var temp_install = setInterval(function() {
-        if ($('#navbar_plugin_enclosure_2').length) {
-                clearInterval(temp_install);
-                $('#navbar_plugin_enclosure_2>a').prepend('<span id="temp_display"></span><span>°C</span>');
-                var temp_timer = setInterval(function() {
-                        $('#temp_display').html(
-                                $('#navbar').find('span[data-bind="text: temp_sensor_temp, attr: {title: temp_sensor_temp}"]').html());
-                }, 3000);
-        }
-}, 3000);
+var temp_install = setInterval(function () {
+  if ($('#navbar_plugin_enclosure_2').length) {
+    clearInterval(temp_install)
+    $('#navbar_plugin_enclosure_2>a').prepend('<span id="temp_display"></span><span>°C</span>')
+    var temp_timer = setInterval(function () {
+      $('#temp_display').html(
+        $('#navbar')
+          .find('span[data-bind="text: temp_sensor_temp, attr: {title: temp_sensor_temp}"]')
+          .html()
+      )
+    }, 3000)
+  }
+}, 3000)
 ```
 
 저장하고 나온다.

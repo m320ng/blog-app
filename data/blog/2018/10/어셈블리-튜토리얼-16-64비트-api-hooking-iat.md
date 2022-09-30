@@ -1,23 +1,23 @@
 ---
-title: "어셈블리 튜토리얼 (16) 64비트 api hooking(IAT)"
-date: "2018-10-04"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리 튜토리얼 (16) 64비트 api hooking(IAT)'
+date: '2018-10-04'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 4.5. api hooking(IAT)
 
 마찬가지로 32비트와 크게 다르지 않다. 이전 예제처럼 `fastcall`함수콜 방식에서 파라메터 설정하는 부분과 메모리주소(포인터)의 크기가 `dword`가 아닌 `qword`이라는 점만 제외하면 똑같으니 이 부분만 확인하면서 훑어보자.
 
-apihook\_64.asm
+apihook_64.asm
 
-```x86asm
+```nasm
 option casemap:none
 ;option frame:auto
 
@@ -118,7 +118,7 @@ GetFunctionTable proc uses rbx rsi rdi, hModule:qword, lpszDll:qword, lpszProc:q
     add rbx, 4              ; PE\0\0
     add rbx, 14h                ; sizeof IMAGE_FILE_HEADER
 
-    ; 
+    ;
     ; Import Data Directory 시작으로 이동
     ; https://docs.microsoft.com/ko-kr/windows/desktop/api/winnt/ns-winnt-_image_optional_header
     ; https://docs.microsoft.com/ko-kr/windows/desktop/api/winnt/ns-winnt-_image_optional_header64
@@ -133,7 +133,7 @@ GetFunctionTable proc uses rbx rsi rdi, hModule:qword, lpszDll:qword, lpszProc:q
     movsxd rbx, (IMAGE_DATA_DIRECTORY ptr [rbx]).VirtualAddress
     add rbx, hModule
 
-    assume rbx:ptr IMAGE_IMPORT_DESCRIPTOR 
+    assume rbx:ptr IMAGE_IMPORT_DESCRIPTOR
 
     .while [rbx].OriginalFirstThunk!=0 && [rbx].FirstThunk!=0
         mov rsi, hVictim
@@ -264,7 +264,7 @@ MyMessageBoxW endp
 end DllEntry
 ```
 
-IMAGE\_OPTIONAL\_HEADER는 IMAGE\_OPTIONAL\_HEADER64로 변경되었다.
+IMAGE_OPTIONAL_HEADER는 IMAGE_OPTIONAL_HEADER64로 변경되었다.
 
 ```
     ; Import Data Directory 시작으로 이동
@@ -272,7 +272,7 @@ IMAGE\_OPTIONAL\_HEADER는 IMAGE\_OPTIONAL\_HEADER64로 변경되었다.
     add rbx, 78h                ; IMAGE_OPTIONAL_HEADER64 (IMAGE_DATA_DIRECTORY전)
 ```
 
-IMAGE\_OPTIONAL\_HEADER에 비해 68h에서 78h로 16byte정도 늘어났다. 4개정도의 포인터의 차이이다. 실제로 확인을 해보면
+IMAGE_OPTIONAL_HEADER에 비해 68h에서 78h로 16byte정도 늘어났다. 4개정도의 포인터의 차이이다. 실제로 확인을 해보면
 
 ```
   ULONGLONG            SizeOfStackReserve;
@@ -298,9 +298,9 @@ IMAGE\_OPTIONAL\_HEADER에 비해 68h에서 78h로 16byte정도 늘어났다. 4�
 
 Name\_이 DWORD이다보니 QWORD와 DWORD를 `add`연산을 할수 없어서 QWORD크기의 레지스터 `rcx`로 복사한 후에 `add` 연산을 하고있다.
 
-injector\_64.asm
+injector_64.asm
 
-앞서 사용했던 injector 그대로이다. mydll\_64.lib만 apihook\_64.lib으로 변경되었다
+앞서 사용했던 injector 그대로이다. mydll_64.lib만 apihook_64.lib으로 변경되었다
 
 ```
 option casemap:none

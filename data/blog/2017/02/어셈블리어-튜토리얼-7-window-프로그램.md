@@ -1,14 +1,14 @@
 ---
-title: "어셈블리어 튜토리얼 (7) Window 프로그램"
-date: "2017-02-22"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리어 튜토리얼 (7) Window 프로그램'
+date: '2017-02-22'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 2.3. Window 프로그램
@@ -19,7 +19,7 @@ tags:
 
 위도우 프로그래밍을 하려고 하는게 아니니 이것이 어떻게 동작하는지는 꼭 이해할 필요는 없을 것 같다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -70,14 +70,14 @@ WinMain proc, hInstance:HINSTANCE, lpCmdLine:LPSTR
     invoke RegisterClassEx, addr wc
 
     ; 윈도우 생성
-    invoke CreateWindowEx, NULL, 
-        addr szClass, 
-        addr szCaption, 
-        WS_OVERLAPPEDWINDOW, 
-        0, 0, 320, 240, 
-        NULL, 
-        NULL, 
-        hInstance, 
+    invoke CreateWindowEx, NULL,
+        addr szClass,
+        addr szCaption,
+        WS_OVERLAPPEDWINDOW,
+        0, 0, 320, 240,
+        NULL,
+        NULL,
+        hInstance,
         NULL
 
     ; 메세지 펌프 (WndProc가 계속 실행된다고 이해하면 된다)
@@ -143,7 +143,7 @@ end start
 
 `windows.inc` 파일을 열어서 살펴보면 아래와 같이 전부 dword로 정의하고있다.
 
-```x86asm
+```nasm
 HKEY                        typedef DWORD
 HKL                         typedef DWORD
 HLOCAL                      typedef DWORD
@@ -157,14 +157,14 @@ HMETAFILE                   typedef DWORD
 
 원도우 프로그래밍에서 사용하는 타입 HINSTANCE, LPSTR 을 마춰서 선언하였다. 앞서 설명했듯이 `WinMain proc, hInstance:dword, lpCmdLine:dword` 그냥 기본 타입인 dword로 선언해도 무방하다. 앞으로 대부분 소스는 이렇게 기본타입인 dword 로 선언하도록 하겠다.
 
-```x86asm
+```nasm
 local wc:WNDCLASSEX
 local msg:MSG
 ```
 
 지역변수이다. 여기서 WNDCLASSEX, MSG 자료형은 조금 특이한데 구조체(struct)라는 것이다. 여러가지 타입(dword, word, byte)가 섞인 배열이라고 이해하면 된다. WNDCLASSEX 를 선언한 곳을 보면 아래와 같다.
 
-```x86asm
+```nasm
 WNDCLASSEX STRUCT
   cbSize            DWORD      ?
   style             DWORD      ?
@@ -183,7 +183,7 @@ WNDCLASSEX ENDS
 
 이렇게 12개의 dword 값이 저장되는 배열이다. `local wc:dword 12 dup(?)` 이렇게 dword 배열로 선언해도 같은 크기의 값으로 상관은 없다. 어차피 12개의 dword, dword가 4byte이므로 총 48byte의 스택메모리공간을 갖을뿐이다. 다만 값을 설정할때 3번째에 있는 `lpfnWndProc` 에 값을 설정한다고 가정할 때 이런정도의 차이가 있겠다.
 
-```x86asm
+```nasm
 ; struct로 선언했을때
 mov wc.lpfnWndProc, 00403000h
 
@@ -193,16 +193,16 @@ mov wc[2 * sizeof dword], 00403000h
 
 당연히 struct를 사용하게는게 훨씬 쉽고 직관적이니 struct를 사용하는 것 뿐이다.
 
-`mov wc.style, CS_HREDRAW or CS_VREDRAW` 마치 mov 명령어와 or 명령어가 혼합되서 사용된 것 처럼 보이는데, 사실 mov 명령어만 사용된 것이다. `CS_HREDRAW or CS_VREDRAW` 는 실제 CS\_VREDRAW값 1h 와 CS\_HREDRAW값 2h 의 or 연산 결과값 3h 으로 입력된다.
+`mov wc.style, CS_HREDRAW or CS_VREDRAW` 마치 mov 명령어와 or 명령어가 혼합되서 사용된 것 처럼 보이는데, 사실 mov 명령어만 사용된 것이다. `CS_HREDRAW or CS_VREDRAW` 는 실제 CS_VREDRAW값 1h 와 CS_HREDRAW값 2h 의 or 연산 결과값 3h 으로 입력된다.
 
-```x86asm
+```nasm
 move wc.style, 3h
 ; 이렇게 되는 것이다.
 ```
 
 이렇게 or 로 복수의 옵션을 입력하는 방법은 or 명령어 설명할때 설명했다. 아래는 관련 옵션값들이다. 2진수로 바꿔서 일전에 설명을 살펴보면 이해하기 쉬울 것이다.
 
-```x86asm
+```nasm
 CS_VREDRAW                           equ 1h
 CS_HREDRAW                           equ 2h
 CS_KEYCVTWINDOW                      equ 4h
@@ -217,35 +217,35 @@ CS_SAVEBITS                          equ 800h
 
 위의 mov 명령어는 당연히 아래처럼 명령어 2줄로 바꿀 수 도 있겠다.
 
-```x86asm
+```nasm
 mov wc.style, CS_HREDRAW
 or wc.style, CS_VREDRAW
 ```
 
 이때는 당연히 진짜 어셈블리 2줄이다.
 
-```x86asm
+```nasm
 push hInstance
 pop wc.hInstance
 ```
 
 push, pop 명령어 설명할때 잠깐 설명했던 레지스터 안쓰고 메모리값간의 값 복사방법이다.
 
-```x86asm
+```nasm
 push hInstance
 pop wc.hInstance
 ```
 
 레지스터 eax를 이용해여 복사해도 무방하다.
 
-```x86asm
+```nasm
 mov eax, hInstance
 mov wc.hInstance, eax
 ```
 
 참고로 이야기하면 다른 레지스터와 달리 **eax** 는 언제든 자유롭게 이용할 수 있다. 함수 반환값에 이용되기 때문에 언제든 변경 될 수 있다고 가정해야하기에 eax 레지스터는 프로그램에 영향을 못미친다. 반대로 eax 레지스터를 제외한 레지스터는 일전에 설명했듯이 백업/복구 과정없이 막 사용하게되면 프로그램에 영향을 미칠수 있고 이것은 곧 프로그램의 예기치못한 종료를 부른다.
 
-```x86asm
+```nasm
 invoke RegisterClassEx, addr wc
 ```
 
@@ -253,7 +253,7 @@ invoke RegisterClassEx, addr wc
 
 실제 어셈블리에서는
 
-```x86asm
+```nasm
 lea eax, wc
 push eax
 call RegisterClassEx
@@ -263,21 +263,21 @@ call RegisterClassEx
 
 addr은 지역변수 뿐만아니라 전역변수에서도 사용할수 있는데 이때는 그냥 offset 쓴것과 똑같이 사용된다. 해서 addr은 지역변수 전역변수 구분없이 변수의 메모리주소값을 파라메터로 전달할때 사용된다. 이점을 이해하면 이후에는 편하게 addr을 사용하면 된다.
 
-```x86asm
-invoke CreateWindowEx, NULL, 
-    addr szClass, 
-    addr szCaption, 
-    WS_OVERLAPPEDWINDOW, 
-    0, 0, 320, 240, 
-    NULL, 
-    NULL, 
-    hInstance, 
+```nasm
+invoke CreateWindowEx, NULL,
+    addr szClass,
+    addr szCaption,
+    WS_OVERLAPPEDWINDOW,
+    0, 0, 320, 240,
+    NULL,
+    NULL,
+    hInstance,
     NULL
 ```
 
 파라메터가 굉장히 많다. 전역변수에도 편하게 addr을 사용했다. 물론 전역변수이기에 offset을 사용해도 된다.
 
-```x86asm
+```nasm
 .while TRUE
     invoke GetMessage, addr msg, 0, 0, 0
     .break .if eax==0
@@ -287,7 +287,7 @@ invoke CreateWindowEx, NULL,
 
 `.while TRUE` 무한 루프다. `.break .if eax==0` GetMessage 의 반환값 eax 가 0이면 무한루프를 탈출한다. 한줄로 표현할때 이렇게 뒤에 붙인다. 정확하게 풀어쓰면
 
-```x86asm
+```nasm
 .if eax == 0
     .break
 .endif

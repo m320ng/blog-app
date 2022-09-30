@@ -1,23 +1,23 @@
 ---
-title: "어셈블리 튜토리얼 (15) 64비트 DLL Injection"
-date: "2018-10-03"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리 튜토리얼 (15) 64비트 DLL Injection'
+date: '2018-10-03'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 4.4. DLL Injection(WinHook)
 
 함수(WinHook)를 이용한 injection이기 때문에 **32비트**와 크게 달라진 부분이 없다. 달라진 부분만 설명하도록 하겠다.
 
-injector\_64.asm
+injector_64.asm
 
-```x86asm
+```nasm
 option casemap:none
 
 include D:\WinInc208\Include\windows.inc
@@ -86,9 +86,9 @@ end start
 
 와우.. 1도 달라진게 없는듯. 이어서 injection되는 dll이다.
 
-mydll\_64.asm
+mydll_64.asm
 
-```x86asm
+```nasm
 option casemap:none
 ;option frame:auto
 
@@ -135,8 +135,8 @@ end DllEntry
 
 마찬가지로 거의 동일하다. 아래 부분만 다시보면..
 
-```x86asm
-;DllEntry 
+```nasm
+;DllEntry
     mov hInstance, rcx
     mov reason, edx
     mov dwReserved, r8d
@@ -146,6 +146,6 @@ end DllEntry
 
 자주 까먹어서 삽질 할 수도 있겠다..싶다.
 
-32비트 예제와 같이 [victim\_64 프로그램](http://note.heyo.me/wp-content/uploads/2018/10/victim_64.zip)을 다운받아서 테스트해보자
+32비트 예제와 같이 [victim_64 프로그램](http://note.heyo.me/wp-content/uploads/2018/10/victim_64.zip)을 다운받아서 테스트해보자
 
 > [목차](http://note.heyo.me/?p=238) 이전글 [어셈블리어 튜토리얼 (14) 64비트](http://note.heyo.me/?p=2003)

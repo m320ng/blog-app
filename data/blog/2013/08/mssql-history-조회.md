@@ -1,13 +1,13 @@
 ---
-title: "mssql history 조회"
-date: "2013-08-10"
-categories: 
-  - "memo"
-tags: 
-  - "mssql"
+title: 'mssql history 조회'
+date: '2013-08-10'
+categories:
+  - 'memo'
+tags:
+  - 'mssql'
 ---
 
-```
+```sql
 select
 DB_NAME(dbid) dbname
 ,OBJECT_NAME(objectid) objname
@@ -46,21 +46,21 @@ and db_name(st.dbid) = 'mjdb'
 --and text like 'DELETE%'
 order by last_execution_time desc;
 
-select 
+select
 st.*,qs.*,req.*
-from 
-sys.dm_exec_query_stats qs cross apply sys.dm_exec_sql_text(qs.sql_handle) st 
+from
+sys.dm_exec_query_stats qs cross apply sys.dm_exec_sql_text(qs.sql_handle) st
 left outer join sys.dm_exec_requests req on req.query_hash = qs.query_hash
 where last_execution_time >= '2011-10-21 00:00:00'
 and text like '%Select Into%'
 
 
 select top 100
-(Select Text from sys.dm_exec_sql_text(a.sql_handle)) as Query, 
-b.login_name, 
-b.login_time, 
-b.program_name, 
-b.host_name 
+(Select Text from sys.dm_exec_sql_text(a.sql_handle)) as Query,
+b.login_name,
+b.login_time,
+b.program_name,
+b.host_name
 from sys.dm_exec_requests a Inner Join sys.dm_exec_sessions b on a.session_id = b.session_id
 where login_time >= '2011-10-01 00:00:00'
 
@@ -68,16 +68,16 @@ where login_time >= '2011-10-01 00:00:00'
 select * from sys.dm_exec_sessions
 where login_time >= '2011-10-24 00:00:00' and login_time <= '2011-10-25 00:00:00'
 
-select top 10 
+select top 10
 *
 from sys.dm_exec_requests
 where sql_handle is not null
 
 
-select sq.text,r.* from sys.dm_exec_requests r 
-join sys.dm_exec_sessions s 
-on r.session_id = s.session_id 
-CROSS APPLY sys.dm_exec_sql_text (r.sql_handle) sq 
+select sq.text,r.* from sys.dm_exec_requests r
+join sys.dm_exec_sessions s
+on r.session_id = s.session_id
+CROSS APPLY sys.dm_exec_sql_text (r.sql_handle) sq
 
 select * from sys.dm_exec_sessions
 

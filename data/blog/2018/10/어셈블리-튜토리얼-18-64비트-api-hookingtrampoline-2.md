@@ -1,14 +1,14 @@
 ---
-title: "어셈블리 튜토리얼 (18) 64비트 api hooking(Trampoline #2)"
-date: "2018-10-14"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리 튜토리얼 (18) 64비트 api hooking(Trampoline #2)'
+date: '2018-10-14'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 4.5. api hooking(Trampoline #2)
@@ -17,7 +17,7 @@ tags:
 
 앞서본 Trampoline처럼 기본구현 방식은 14byte(jmp코드)를 덮어씌우는 방식으로 동일하다. 후킹함수내에서 원래 함수를 호출하는 부분만 관심있게 보면 되겠다.
 
-```x86asm
+```nasm
 option casemap:none
 ;option frame:auto
 
@@ -314,7 +314,7 @@ MyMessageBoxA endp
 end DllEntry
 ```
 
-```x86asm
+```nasm
 ApiHookStruct struct
     szDll           byte 32 dup(0) ; DLL명
     szProc          byte 32 dup(0) ; 함수명
@@ -329,7 +329,7 @@ ApiHookStruct ends
 
 후킹된 함수의 정보를 담은 구조체가 추가되었다. 매번 후킹을 토글해야하므로 관련정보를 저장해서 관리하기위한 구조체이다.
 
-```x86asm
+```nasm
             invoke AddApiHook, addr szUSER32, addr szMessageBoxA, addr MyMessageBoxA
             mov lpApiMessageBoxA, rax
             invoke LoadApiHook, rax
@@ -339,7 +339,7 @@ ApiHookStruct ends
 
 **LoadApiHook**에서 ApiHookStruct를 파라메터로 받아서 후킹을 걸고 각종 후킹정보를 저장한다. 앞으로 이 정보를 통해서 후킹을 토글하게된다. LoadApiHook 함수는 이전 방식의 **LoadApiHook**함수와 거의 동일하니 비교하며 훑어보면 되겠다. 이전 방식과 달리 무조건 14byte를 덮어씌운다. 기존 함수의 시작부분 14byte를 구조체에 저장해둔다.
 
-```x86asm
+```nasm
     ; 원본 stub 백업
     mov rsi, lpOrgProc
     lea rdi, [rbx].StubOrg
@@ -350,14 +350,14 @@ ApiHookStruct ends
 
 기존에 `rep movsb`를 이용하여 복사하던 것과 달리 `movsq movsd movsw` 로 복사한다. 각각 **qword 8byte복사 + dword 4byte복사 + word 2byte복사**로 14byte복사와 동일하다. 기존처럼하면 이렇게 할 수 있겠다.
 
-```x86asm
+```nasm
 mov rsi, lpOrgProc
 lea rdi, [rbx].StubOrg
 mov rcx, 14
 rep movsb
 ```
 
-```x86asm
+```nasm
 RestoreFunc:
 .
 .
@@ -371,7 +371,7 @@ HookFunc:
 
 naked 함수이다. ApiHookStruct구조체 주소를 `rax`를 파라메터로 받는다. RestoreFunc는 원래의 함수로 복구하고, HookFunc는 다시 후킹을 한다. 뒤에서 원래의 함수를 호출할때 사용된다.
 
-```x86asm
+```nasm
 MyMessageBoxA proc, arg1:qword, arg2:qword, arg3:qword, arg4:dword
 ```
 

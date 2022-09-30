@@ -1,13 +1,13 @@
 ---
-title: "[node.js] async await (with co)"
-date: "2017-01-20"
-categories: 
-  - "code"
-tags: 
-  - "node-js"
-  - "promise"
-  - "async-await"
-  - "co"
+title: '[node.js] async await (with co)'
+date: '2017-01-20'
+categories:
+  - 'code'
+tags:
+  - 'node-js'
+  - 'promise'
+  - 'async-await'
+  - 'co'
 ---
 
 async await 연습
@@ -44,111 +44,113 @@ async await 와 똑같다.
 
 source
 
-```
-"use strict";
+```js
+'use strict'
 
-var co = require('co');
-var fs = require('fs-promise');
-var glob = require('glob-promise');
-var path = require('path');
-var archiver = require('archiver-promise');
+var co = require('co')
+var fs = require('fs-promise')
+var glob = require('glob-promise')
+var path = require('path')
+var archiver = require('archiver-promise')
 
-var setting = {};
-var today = '';
+var setting = {}
+var today = ''
 
 //global var
-var load_setting = co.wrap(function *() {
-    let raw = yield fs.readFile(__dirname+'/setting.json', 'utf8');
+var load_setting = co.wrap(function* () {
+  let raw = yield fs.readFile(__dirname + '/setting.json', 'utf8')
 
-    setting = JSON.parse(raw);
+  setting = JSON.parse(raw)
 
-    // YYYYMMDD today
-    let now = new Date;
-    let t = [now.getFullYear(), (now.getMonth() + 1), now.getDate()];
-    today = t.map(function(item) {
-        return item < 10 ? '0'+item : ''+item;
-    }).join('');
+  // YYYYMMDD today
+  let now = new Date()
+  let t = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+  today = t
+    .map(function (item) {
+      return item < 10 ? '0' + item : '' + item
+    })
+    .join('')
 
-    return setting;
-});
+  return setting
+})
 
 function start_app() {
-    co(function *() {
-        let start_date = '';
-        let prefix = '';
+  co(function* () {
+    let start_date = ''
+    let prefix = ''
 
-        var ret = yield load_setting();
-        console.log('load_setting');
+    var ret = yield load_setting()
+    console.log('load_setting')
 
-        if (!today) throw Error('today');
-        if (!setting) throw Error('setting');
-        if (!setting.dst_dir) throw Error('dst_dir');
+    if (!today) throw Error('today')
+    if (!setting) throw Error('setting')
+    if (!setting.dst_dir) throw Error('dst_dir')
 
-        let files = yield glob(path.join(setting.src_dir, "*.log"));
+    let files = yield glob(path.join(setting.src_dir, '*.log'))
 
-        if (!files || files.length==0) return '';
-        let name = path.basename(files[0], '.log');
+    if (!files || files.length == 0) return ''
+    let name = path.basename(files[0], '.log')
 
-        start_date = name.substring(name.length - 6);
-        prefix = name.substring(0, name.length - 6);
+    start_date = name.substring(name.length - 6)
+    prefix = name.substring(0, name.length - 6)
 
-        let date = start_date;
-        console.log('today = '+ today);
-        console.log('date = '+ date);
+    let date = start_date
+    console.log('today = ' + today)
+    console.log('date = ' + date)
 
-        if (!date) {
-            throw new Error('no file');
-        }
-        if (date.length != 6) {
-            throw new Error('error');
-        }
-        if (!date.match(/[0-9]+/)) {
-            throw new Error('error');
-        }
-        let month = date.substring(0, 4);
+    if (!date) {
+      throw new Error('no file')
+    }
+    if (date.length != 6) {
+      throw new Error('error')
+    }
+    if (!date.match(/[0-9]+/)) {
+      throw new Error('error')
+    }
+    let month = date.substring(0, 4)
 
-        if (month == today.substring(2, 6)) {
-            console.log(month + ' = today');
-            console.log('no more');
-            throw new Error('no more');
-        }
+    if (month == today.substring(2, 6)) {
+      console.log(month + ' = today')
+      console.log('no more')
+      throw new Error('no more')
+    }
 
-        console.log('>>'+month);
-        console.log('>>'+prefix);
+    console.log('>>' + month)
+    console.log('>>' + prefix)
 
-        // zip 압축
-        console.log('zipping..');
+    // zip 압축
+    console.log('zipping..')
 
-        let archive = archiver(prefix+month+'.zip', {
-            store: true
-        });
+    let archive = archiver(prefix + month + '.zip', {
+      store: true,
+    })
 
-        console.log(path.join(setting.src_dir, prefix+month+'*.log'));
+    console.log(path.join(setting.src_dir, prefix + month + '*.log'))
 
-        // 대상로그파일추가
-        archive.glob(prefix+month+'*.log', {
-            cwd: setting.src_dir
-        });
+    // 대상로그파일추가
+    archive.glob(prefix + month + '*.log', {
+      cwd: setting.src_dir,
+    })
 
-        yield archive.finalize();
+    yield archive.finalize()
 
-        console.log(archive.pointer() + ' total bytes');
-        console.log('archiver has been finalized and the output file descriptor has closed.');
+    console.log(archive.pointer() + ' total bytes')
+    console.log('archiver has been finalized and the output file descriptor has closed.')
 
-        // zip 파일 복사
-        yield fs.rename(prefix+month+'.zip', path.join(setting.dst_dir, prefix+month+'.zip'));
+    // zip 파일 복사
+    yield fs.rename(prefix + month + '.zip', path.join(setting.dst_dir, prefix + month + '.zip'))
 
-        // 로그삭제
-        console.log('log delete..');
+    // 로그삭제
+    console.log('log delete..')
 
-        files = yield glob(path.join(setting.src_dir, prefix+month+"*.log"))
+    files = yield glob(path.join(setting.src_dir, prefix + month + '*.log'))
 
-        for (let file of files) {
-            yield fs.unlink(file);
-            console.log(file + ' deleted');
-        }
+    for (let file of files) {
+      yield fs.unlink(file)
+      console.log(file + ' deleted')
+    }
 
-        /*
+    /*
         // 기존 forEach는 쓰면 안됨
         // 기본 forEach는 제네레이터함수가 아닌 일반함수만 받기때문
 
@@ -173,18 +175,17 @@ function start_app() {
         });
         */
 
-        console.log('end..');
+    console.log('end..')
 
-        // 재시작
-        setTimeout(() => {
-            console.log('3 second wait...');
-            start_app();
-        }, 3000);
-
-    }).catch(function(err) {
-        console.log(err);
-    });
+    // 재시작
+    setTimeout(() => {
+      console.log('3 second wait...')
+      start_app()
+    }, 3000)
+  }).catch(function (err) {
+    console.log(err)
+  })
 }
 
-start_app();
+start_app()
 ```

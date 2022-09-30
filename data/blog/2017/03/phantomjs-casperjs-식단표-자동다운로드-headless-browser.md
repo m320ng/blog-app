@@ -1,12 +1,12 @@
 ---
-title: "[phantomjs/casperjs] 식단표 자동다운로드 (headless browser)"
-date: "2017-03-03"
-categories: 
-  - "code"
-tags: 
-  - "headless-browser"
-  - "phantomjs"
-  - "casperjs"
+title: '[phantomjs/casperjs] 식단표 자동다운로드 (headless browser)'
+date: '2017-03-03'
+categories:
+  - 'code'
+tags:
+  - 'headless-browser'
+  - 'phantomjs'
+  - 'casperjs'
 ---
 
 headless browser 를 사용해 보았다.
@@ -51,142 +51,152 @@ headless browser 를 이용하면 웹페이지 이용하듯이 스크립트를 �
 
 검색해보아도 phanomjs의 소스를 직접수정해서 빌드하는식의 방법밖에 없어서 url, post, headers 값들을 돌려서 casperjs의 download 를 이용하는방법으로 해결했다.
 
-```
-"use strict"
-var util = require('util'); 
+```js
+'use strict'
+var util = require('util')
 
 var casper = require('casper').create({
-    userAgent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36'
-});
+  userAgent:
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36',
+})
 
-var __dirname = 'd:\\nodejs\\_lunch';
+var __dirname = 'd:\\nodejs\\_lunch'
 
-var xlsfile = __dirname+'/lunch.xlsx';
-var account = 'cook';
-var password = 'cook';
+var xlsfile = __dirname + '/lunch.xlsx'
+var account = 'cook'
+var password = 'cook'
 
-casper.start('https://그룹웨어/Logon/Login.aspx')
-// 첫페이지
-.then(function() {
-    this.echo('Page: ' + this.getTitle());
+casper
+  .start('https://그룹웨어/Logon/Login.aspx')
+  // 첫페이지
+  .then(function () {
+    this.echo('Page: ' + this.getTitle())
     //this.capture('login.png');
-})
-// 로그인
-.then(function() {
+  })
+  // 로그인
+  .then(function () {
     // script 값 전달
-    this.evaluate(function(account, password) {
-        var form = document.forms[0];
-        form.txtLoginID.value = account;
-        form.txtPassword.value = password;
-    }, account, password);
+    this.evaluate(
+      function (account, password) {
+        var form = document.forms[0]
+        form.txtLoginID.value = account
+        form.txtPassword.value = password
+      },
+      account,
+      password
+    )
 
-    this.evaluate(function() {
-        document.getElementById('btnLogin').click();
-    });
-    this.echo('login');
-    //this.capture('login2.png');
-})
-// 게시판 이동
-.waitForSelector('a[title=게시판]')
-.then(function() {
-    this.echo('go board');
-    //this.capture('board.png');
-})
-.then(function() {
-    this.evaluate(function() {
-        //$('a[title=게시판]').click();
-        location.href = '/eNovator/GW/TotalBoard/TotalBoard_Main.aspx?menu_code=';
-    });
-})
-// 자유게시판 클릭
-.waitForSelector('span.TreeControl_TreeLabel')
-.then(function() {
-    //this.capture('board2.png');
-    this.evaluate(function() {
-        $('span:contains(자유게시판)').click();
-    });
-})
-// 식단표 클릭
-.waitForSelector('#ListView')
-.then(function() {
-    this.evaluate(function() {
-        $('#ListView table td span.cssLinkItem:contains(주간식단표)')[0].click();
-    });
-    this.echo('click');
-})
-// 팝업
-.then(function() {
-    this.echo('wait popup');
-    this.waitForPopup(/\.aspx$/, function() {
-        this.echo("popup opened");
+    this.evaluate(function () {
+      document.getElementById('btnLogin').click()
     })
-    .withPopup(/\.aspx$/, function() {
-        this.echo("with popup");
+    this.echo('login')
+    //this.capture('login2.png');
+  })
+  // 게시판 이동
+  .waitForSelector('a[title=게시판]')
+  .then(function () {
+    this.echo('go board')
+    //this.capture('board.png');
+  })
+  .then(function () {
+    this.evaluate(function () {
+      //$('a[title=게시판]').click();
+      location.href = '/eNovator/GW/TotalBoard/TotalBoard_Main.aspx?menu_code='
+    })
+  })
+  // 자유게시판 클릭
+  .waitForSelector('span.TreeControl_TreeLabel')
+  .then(function () {
+    //this.capture('board2.png');
+    this.evaluate(function () {
+      $('span:contains(자유게시판)').click()
+    })
+  })
+  // 식단표 클릭
+  .waitForSelector('#ListView')
+  .then(function () {
+    this.evaluate(function () {
+      $('#ListView table td span.cssLinkItem:contains(주간식단표)')[0].click()
+    })
+    this.echo('click')
+  })
+  // 팝업
+  .then(function () {
+    this.echo('wait popup')
+    this.waitForPopup(/\.aspx$/, function () {
+      this.echo('popup opened')
+    }).withPopup(/\.aspx$/, function () {
+      this.echo('with popup')
 
-        //this.viewport(1400,800);
-        this.waitForSelector("#divDownLoadArea").then(function() {
-            /*
+      //this.viewport(1400,800);
+      this.waitForSelector('#divDownLoadArea').then(function () {
+        /*
             var len = this.evaluate(function() {
                 return $('#divDownLoadArea span:contains(전체다운로드)').length;
             });
             this.echo('len:'+len);
             */
-            var checkDownload = false;
+        var checkDownload = false
 
-            // 파일다운로드
-            var self = this;
-            this.page.onResourceReceived = function (res) {
-                //if(res.stage!="end") return;
-                //console.log('received: ' + JSON.stringify(res, undefined, 4));
-            };
-            this.page.onResourceRequested = function (req) {
-                if (req.url.match(/fileDownload\.ashx/g)) {
-                    self.page.onResourceRequested = null;
-                    //console.log(req.url);
-                    var headers = {};
-                    req.headers.forEach(function(item) {
-                        headers[item.name] = item.value;
-                    });
-                    //console.log(util.inspect(headers));
-                    try {
-                        self.download(req.url, xlsfile, 'POST', req.postData);
-                        console.log('download complete');
-                    } catch(e) {
-                        console.log('download error');
-                        console.log(e);
-                    }
-                    checkDownload = true;
-                    //console.log('requested: ' + JSON.stringify(req, undefined, 4));
-                }
-            };
+        // 파일다운로드
+        var self = this
+        this.page.onResourceReceived = function (res) {
+          //if(res.stage!="end") return;
+          //console.log('received: ' + JSON.stringify(res, undefined, 4));
+        }
+        this.page.onResourceRequested = function (req) {
+          if (req.url.match(/fileDownload\.ashx/g)) {
+            self.page.onResourceRequested = null
+            //console.log(req.url);
+            var headers = {}
+            req.headers.forEach(function (item) {
+              headers[item.name] = item.value
+            })
+            //console.log(util.inspect(headers));
+            try {
+              self.download(req.url, xlsfile, 'POST', req.postData)
+              console.log('download complete')
+            } catch (e) {
+              console.log('download error')
+              console.log(e)
+            }
+            checkDownload = true
+            //console.log('requested: ' + JSON.stringify(req, undefined, 4));
+          }
+        }
 
-            // 다운로드 클릭
-            this.evaluate(function() {
-                $('.FileTransferControl_FileList span').trigger('mouseover');
-                $('#PreviewDownloadBtn span:contains(다운로드)').click();
-            });
-            this.waitFor(function check() {
-                return checkDownload;
-            }, function then() {
-                return this;
-            }, function timeout() {
-                console.log('timeout');
-                return this;
-            }, 10000);
+        // 다운로드 클릭
+        this.evaluate(function () {
+          $('.FileTransferControl_FileList span').trigger('mouseover')
+          $('#PreviewDownloadBtn span:contains(다운로드)').click()
+        })
+        this.waitFor(
+          function check() {
+            return checkDownload
+          },
+          function then() {
+            return this
+          },
+          function timeout() {
+            console.log('timeout')
+            return this
+          },
+          10000
+        )
 
-            return this;
-        });
-    });
-    return this;
+        return this
+      })
+    })
+    return this
+  })
+  .then(function () {
+    this.echo('complete')
+  })
+
+casper.on('page.error', function (msg, trace) {
+  casper.echo(msg)
+  casper.echo(utils.dump(trace))
 })
-.then(function() {
-    this.echo('complete');
-});
 
-casper.on('page.error', function(msg, trace) {
-    casper.echo(msg);
-    casper.echo(utils.dump(trace));
-});
-
-casper.run();
+casper.run()
 ```

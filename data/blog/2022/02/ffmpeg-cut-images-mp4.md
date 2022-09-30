@@ -1,11 +1,11 @@
 ---
-title: "ffmpeg cut >images >mp4"
-date: "2022-02-22"
-categories: 
-  - "memo"
+title: 'ffmpeg cut >images >mp4'
+date: '2022-02-22'
+categories:
+  - 'memo'
 ---
 
-```
+```bash
 ffmpeg -ss 00:01:00 -to 00:02:00  -i input.mp4 -c copy output.mp4
 
 ffmpeg -ss 00:01:00 -t 00:00:10  -i input.mp4 -c copy output.mp4

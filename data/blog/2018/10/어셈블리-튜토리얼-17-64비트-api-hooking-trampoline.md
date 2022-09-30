@@ -1,14 +1,14 @@
 ---
-title: "어셈블리 튜토리얼 (17) 64비트 api hooking(Trampoline)"
-date: "2018-10-07"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
+title: '어셈블리 튜토리얼 (17) 64비트 api hooking(Trampoline)'
+date: '2018-10-07'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
 ---
 
 ## 4.5. api hooking(Trampoline)
@@ -17,7 +17,7 @@ Trampoline은 IAT 방식과 달리 많이 복잡해졌다. **32비트와 달라�
 
 _32bit MessageBoxA 함수_
 
-```x86asm
+```nasm
 ; 32bit stdcall 정형화된 함수시작 (5byte)
 mov edi,edi
 push ebp
@@ -26,7 +26,7 @@ mov ebp,esp
 
 _64bit MessageBoxA 함수_
 
-```x86asm
+```nasm
 ; 64bit fastcall 바로 구현이 시작되어 함수마다 모두 다르다.
 sub rsp,38
 xor r11d,r11d
@@ -38,7 +38,7 @@ cmp dword ptr ds:[7FFE1B2340B8],r11d
 
 예를 들어 위의 어셈블리코드를 바이트와 함께 다시보면
 
-```x86asm
+```nasm
 48 83 EC 38              | sub rsp,38
 45 33 DB                 | xor r11d,r11d
 44 39 1D DA 58 03 00     | cmp dword ptr ds:[7FFE1B2340B8],r11d
@@ -56,9 +56,9 @@ cmp dword ptr ds:[7FFE1B2340B8],r11d
 
 크게 두가지가 달라졌는데 첫번째는 위에서 설명한 5byte 대신 **온전히 동작하는 단위**를 입력해야 하는 부분. 두번째는 **함수로 점프하는 stub** 부분이 조금 복잡해졌다.
 
-**apihook\_64.asm**
+**apihook_64.asm**
 
-```x86asm
+```nasm
 option casemap:none
 ;option frame:auto
 
@@ -279,13 +279,13 @@ end DllEntry
 먼저 함수로 점프하는 stub 부분을 보도록 하겠다.
 
 ```
-; Hook 함수로 점프하는 stub 
+; Hook 함수로 점프하는 stub
 ; 원본 함수로 점프하는 stub
 ```
 
 두 부분이다. 32bit에서는 `jmp 00000000` jmp코드로 간단하게 처리했었다.
 
-```x86asm
+```nasm
 ; 32bit 구현부분
     mov byte ptr [esi], 0E9h ; E9 00 00 00 00 ; jmp 00000000
     mov dword ptr [esi + 1], eax
@@ -293,7 +293,7 @@ end DllEntry
 
 64bit에서는 64bit 주소로 바로 jmp하는 명령어가 없다.
 
-```x86asm
+```nasm
 ; 64bit 주소로 jmp를 지원하지 않는다.
 jmp 0000000000000000
 
@@ -304,7 +304,7 @@ jmp rax
 
 이런식으로 레지스터를 이용해야 한다. 레지스터를 쓰지 않고 jmp하는 방법으로 return을 이용하기도 한다.
 
-```x86asm
+```nasm
 ; jmp 00401000 와 같다.
 push 00401000
 ret
@@ -312,7 +312,7 @@ ret
 
 그런데 jmp와 마찬가지로 64bit값(qword) 는 push 할수 없다. 역시 레지스터를 이용해야한다.
 
-```x86asm
+```nasm
 ; 64bit 주소값을 push할수없다.
 push 00007FFE1B1FEAFB
 ret
@@ -325,7 +325,7 @@ ret
 
 레지스터 없이 사용하기위해 하위 dword를 push 하고 상위 dword를 복사한다.
 
-```x86asm
+```nasm
 ; push 00007FFE1B1FEAFB와 같다.
 push 1B1FEAFB
 mov [rsp+4], 00007FFE
@@ -334,7 +334,7 @@ ret
 
 여기에선 이 방법을 이용한다. 이 코드는 14byte이다. 그러므로 32bit의 5byte와 달리 **64bit에서는 14byte가 jmp구문이다.**
 
-```x86asm
+```nasm
     mov rax, lpTossProc
 
     ; push 000000h ; 68 DWORD
@@ -361,11 +361,11 @@ LoadApiHook 함수가 달라졌다. orgStubCount 파라메터가 추가되었다
 
 후킹하려는 함수 시작부분이다.
 
-```x86asm
+```nasm
 48 8B C4                  | mov rax,rsp                             |
 48 89 58 08               | mov qword ptr ds:[rax+8],rbx            |
 48 89 68 18               | mov qword ptr ds:[rax+18],rbp           |
-48 89 70 20               | mov qword ptr ds:[rax+20],rsi           | 
+48 89 70 20               | mov qword ptr ds:[rax+20],rsi           |
 ...
 ```
 
@@ -375,7 +375,7 @@ jmp구문의 최소크기인 14byte를 자르면 마지막 구문이 깨지게 �
 
 MessageBoxA는 현재의 방법에서는 후킹할 수 없다. MessageBoxA의 시작부분을 보면
 
-```x86asm
+```nasm
 48 83 EC 38              | sub rsp,38
 45 33 DB                 | xor r11d,r11d
 44 39 1D DA 58 03 00     | cmp dword ptr ds:[7FFE1B2340B8],r11d
@@ -383,7 +383,7 @@ MessageBoxA는 현재의 방법에서는 후킹할 수 없다. MessageBoxA의 �
 
 일단 크기는 정확히 14byte로 자르는데에는 문제는 없다. 다만 마지막 구문이 문제가 되는데 DA 58 03 00 는 **상대주소값**이다. 현재의 위치에서의 상대주소값이기 때문에 다른 위치에서 실행 할 경우 값이 달라지게 된다. 그래서 이 부분을 후킹한 함수 뒤에 붙여서 실행주소가 달라질 경우 동작하지 않는다. 32bit와 달리 바로 구현부분이 나오기 때문에 발생하는 문제이다.
 
-```x86asm
+```nasm
 MyMessageBoxA proc
     sub rsp, 38h
     call MyMessageBoxAJMP
@@ -394,7 +394,7 @@ MyMessageBoxA proc
 
 MessageBoxTimeoutA 의 파라메터는 7개이다. `rsp`를 56byte(38h)를 확보하고 호출한다.
 
-```x86asm
+```nasm
 MyMessageBoxAJMP:
     db 32 dup(90h) ;org stub
     db 14 dup(90h) ;jmp
@@ -404,14 +404,14 @@ MyMessageBoxAJMP:
 
 LoadApiHook가 실행되고나면 아래와같이 변한다.
 
-```x86asm
+```nasm
 MyMessageBoxAJMP:
 ; MessageBoxTimeoutA의 시작부분 15byte
 mov rax,rsp
 mov qword ptr ds:[rax+8],rbx
 mov qword ptr ds:[rax+18],rbp
-mov qword ptr ds:[rax+20],rsi   
-; 17byte가 nop으로 채워져있다        | 
+mov qword ptr ds:[rax+20],rsi
+; 17byte가 nop으로 채워져있다        |
 nop
 nop
 nop
@@ -428,7 +428,7 @@ MyMessageBoxAJMP를 call하면 자연스럽게 원래의 함수가 실행될 것
 
 다소 제약사항이 생기고 함수호출이 조금 번잡하지만 32bit Trampoline만 이해한다면 크게 달라진 부분은 없다.
 
-injector\_64 와 victim\_64를 실행하여 테스트해보자.
+injector_64 와 victim_64를 실행하여 테스트해보자.
 
 다음은 좀더 유연한 Trampoline 방식을 간단히 알아보고 넘어가자. 이 방식은 후킹함수가 호출될때마다 원본 함수를 복구하고 다시 후킹하는 방식이기때문에 성능상으로는 떨어지게되지만 매번 함수시작부분 코드를 체크하지 않아도 되어 간편하다.
 

@@ -1,17 +1,17 @@
 ---
-title: "[node.js] IIS Log 월별로 압축하기"
-date: "2016-10-06"
-categories: 
-  - "code"
-tags: 
-  - "node-js"
-  - "iis-log"
-  - "archiver"
+title: '[node.js] IIS Log 월별로 압축하기'
+date: '2016-10-06'
+categories:
+  - 'code'
+tags:
+  - 'node-js'
+  - 'iis-log'
+  - 'archiver'
 ---
 
 IIS Log를 정리하는 스크립트이다.
 
-```
+```bash
 C:\inetpub\logs\LogFiles\W3SVC4
 
 u_ex151103.log
@@ -30,107 +30,106 @@ u_ex151104.log
 
 source
 
-```
-var fs = require('fs');
-var glob = require('glob');
-var path = require('path');
-var archiver = require('archiver');
+```js
+var fs = require('fs')
+var glob = require('glob')
+var path = require('path')
+var archiver = require('archiver')
 
-var settingraw = fs.readFileSync(__dirname+'/setting.json', 'utf8');
-var setting = JSON.parse(settingraw);
+var settingraw = fs.readFileSync(__dirname + '/setting.json', 'utf8')
+var setting = JSON.parse(settingraw)
 
-var src_dir = setting.src_dir;
-var dst_dir = setting.dst_dir;
+var src_dir = setting.src_dir
+var dst_dir = setting.dst_dir
 
-var now = new Date;
+var now = new Date()
 // YYYYMMDD today
-var today = [now.getFullYear(), (now.getMonth() + 1), now.getDate()];
-today = today.map(function(item) {
-    return item < 10 ? '0'+item : ''+item;
-}).join('');
+var today = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+today = today
+  .map(function (item) {
+    return item < 10 ? '0' + item : '' + item
+  })
+  .join('')
 
 function get_start_date(callback) {
-    glob(path.join(src_dir, "*.log"), function (er, files) {
-        var name = path.basename(files[0], '.log');
-        callback(name.substring(name.length - 6), name.substring(0, name.length - 6));
-    });
+  glob(path.join(src_dir, '*.log'), function (er, files) {
+    var name = path.basename(files[0], '.log')
+    callback(name.substring(name.length - 6), name.substring(0, name.length - 6))
+  })
 }
 
 function start_app() {
-    get_start_date(function(date, prefix) {
-        console.log('today = '+ today);
+  get_start_date(function (date, prefix) {
+    console.log('today = ' + today)
 
-        if (date.length != 6) {
-            console.log('error');
-            return;
-        }
-        if (!date.match(/[0-9]+/)) {
-            console.log('error');
-            return;
-        }
-        var month = date.substring(0, 4);
+    if (date.length != 6) {
+      console.log('error')
+      return
+    }
+    if (!date.match(/[0-9]+/)) {
+      console.log('error')
+      return
+    }
+    var month = date.substring(0, 4)
 
-        if (month == today.substring(2, 6)) {
-            console.log(month + ' = today');
-            console.log('no more');
-            return;
-        }
+    if (month == today.substring(2, 6)) {
+      console.log(month + ' = today')
+      console.log('no more')
+      return
+    }
 
-        console.log('>>'+month);
-        console.log('>>'+prefix);
+    console.log('>>' + month)
+    console.log('>>' + prefix)
 
-        // zip 압축
-        console.log('zipping..');
+    // zip 압축
+    console.log('zipping..')
 
-        var output = fs.createWriteStream(prefix+month+'.zip');
-        var archive = archiver('zip');
+    var output = fs.createWriteStream(prefix + month + '.zip')
+    var archive = archiver('zip')
 
-        output.on('close', function () {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
+    output.on('close', function () {
+      console.log(archive.pointer() + ' total bytes')
+      console.log('archiver has been finalized and the output file descriptor has closed.')
 
-            // zip 파일 복사
-            fs.rename(prefix+month+'.zip', path.join(dst_dir, prefix+month+'.zip'));
+      // zip 파일 복사
+      fs.rename(prefix + month + '.zip', path.join(dst_dir, prefix + month + '.zip'))
 
-            // 로그삭제
-            console.log('log delete..');
+      // 로그삭제
+      console.log('log delete..')
 
-            glob(path.join(src_dir, prefix+month+"*.log"), function (er, files) {
-                files.forEach(function(file, index) {
-                    fs.unlink(file, function(err) {
-                        console.log(file + ' deleted');
-                    });
-                });
-            });
+      glob(path.join(src_dir, prefix + month + '*.log'), function (er, files) {
+        files.forEach(function (file, index) {
+          fs.unlink(file, function (err) {
+            console.log(file + ' deleted')
+          })
+        })
+      })
 
-            // 재시작
-            setTimeout(function() {
-                console.log('3 second wait...');
-                start_app();
-            }, 3000);
-        });
+      // 재시작
+      setTimeout(function () {
+        console.log('3 second wait...')
+        start_app()
+      }, 3000)
+    })
 
-        archive.on('error', function(err){
-            throw err;
-        });
+    archive.on('error', function (err) {
+      throw err
+    })
 
-        archive.pipe(output);
-        archive.bulk([
-            { expand: true, cwd: src_dir, src: [prefix+month+'*.*']}
-        ]);
-        archive.finalize();
-
-    });
+    archive.pipe(output)
+    archive.bulk([{ expand: true, cwd: src_dir, src: [prefix + month + '*.*'] }])
+    archive.finalize()
+  })
 }
 
-start_app();
+start_app()
 ```
 
 setting.json
 
-```
+```json
 {
-    "src_dir" : "C:\\inetpub\\logs\\LogFiles\\W3SVC2",
-    "dst_dir" : "D:\\IIS_LOG\\W3SVC2"
+  "src_dir": "C:\\inetpub\\logs\\LogFiles\\W3SVC2",
+  "dst_dir": "D:\\IIS_LOG\\W3SVC2"
 }
 ```

@@ -1,12 +1,12 @@
 ---
-title: "[python] 윈도우 서비스 관리"
-date: "2016-10-05"
-categories: 
-  - "code"
-tags: 
-  - "python"
-  - "window-service"
-  - "윈도우서비스"
+title: '[python] 윈도우 서비스 관리'
+date: '2016-10-05'
+categories:
+  - 'code'
+tags:
+  - 'python'
+  - 'window-service'
+  - '윈도우서비스'
 ---
 
 파이썬 연습.
@@ -21,7 +21,7 @@ win32serviceutil를 이용해서 윈도우 서비스를 관리.
 
 python 소스
 
-```
+```python
 try:
     import winxpgui as win32gui
 except ImportError:

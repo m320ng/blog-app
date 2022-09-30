@@ -1,16 +1,16 @@
 ---
-title: "어셈블리어 튜토리얼 (9) DLL Injection (WinHook)"
-date: "2017-03-03"
-categories: 
-  - "code"
-  - "hacking"
-tags: 
-  - "asm"
-  - "어셈블리"
-  - "api-hooking"
-  - "리버스-엔지니어링"
-  - "dll-injection"
-  - "dll인젝션"
+title: '어셈블리어 튜토리얼 (9) DLL Injection (WinHook)'
+date: '2017-03-03'
+categories:
+  - 'code'
+  - 'hacking'
+tags:
+  - 'asm'
+  - '어셈블리'
+  - 'api-hooking'
+  - '리버스-엔지니어링'
+  - 'dll-injection'
+  - 'dll인젝션'
 ---
 
 # 3\. 리버스 엔지니어링 (1)
@@ -20,7 +20,7 @@ tags:
 1. 파일수정(exe) : 해당 프로그램을 직접 수정하는 방법
 2. 메모리수정 : 내가 만든 프로그램을 해당 프로그램에 침투하는 방법
 
-첫번째 방법은 바이너리 패치라고하며 해당 프로그램(exe)을 어셈블리 단위로 파악해서(디어셈블) 원하는 동작을 기계어로 exe파일에다 **직접 입력/수정**을 해야한다. 이 방법은 정말 간단한 프로그램이면 모를까 조금만 커져도 파악하기도 쉽지않고 기계어로 원하는 동작을 코딩해서 집어넣기도 쉽지않다. (더군다나 많은 exe파일은 _패킹_이라는 일종의 암호화되어 있어 디어셈하기 힘들다)
+첫번째 방법은 바이너리 패치라고하며 해당 프로그램(exe)을 어셈블리 단위로 파악해서(디어셈블) 원하는 동작을 기계어로 exe파일에다 **직접 입력/수정**을 해야한다. 이 방법은 정말 간단한 프로그램이면 모를까 조금만 커져도 파악하기도 쉽지않고 기계어로 원하는 동작을 코딩해서 집어넣기도 쉽지않다. (더군다나 많은 exe파일은 *패킹*이라는 일종의 암호화되어 있어 디어셈하기 힘들다)
 
 두번째 방법은 동적라이브러리(DLL) 삽입이다. 윈도우에서 모든 프로그램은 DLL을 이용하고있다. 실제로 앞서 _kernel32.dll user32.dll_ 등 많은 DLL을 사용해왔고 직접 만들어서 사용해보기도 했다. 직접만든 DLL라이브러리를 원하는 프로그램에 삽입할수 있다면 해당 프로그램을 내부에서 수정할 수 있다. **DLL 라이브러리이기 때문에 만들기도 훨씬 수월하다.**
 
@@ -38,7 +38,7 @@ Windows Hooking 글로벌 후킹를 이용한 방법부터 살펴보겠다.
 
 Windows Hooking(SetWindowHookEx)을 이용한 DLL 인젝션이다.
 
-[SetWindowsHookEx MSDN](https://msdn.microsoft.com/ko-kr/library/windows/desktop/ms644990(v=vs.85).aspx) 를 살펴보면 아래와 같이 api 함수 설명에도 명시되어있다.
+[SetWindowsHookEx MSDN](<https://msdn.microsoft.com/ko-kr/library/windows/desktop/ms644990(v=vs.85).aspx>) 를 살펴보면 아래와 같이 api 함수 설명에도 명시되어있다.
 
 > SetWindowsHookEx can be used to inject a DLL into another process. SetWindowsHookEx를 사용하여 DLL을 다른 프로세스에 삽입 할 수 있습니다.
 
@@ -48,7 +48,7 @@ Windows Hooking(SetWindowHookEx)을 이용한 DLL 인젝션이다.
 
 간단하게 DLL 라이브러리를 로드하는 프로그램이다. 별다른 일은 하진 않는다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -129,7 +129,7 @@ SetWindowHookEx는 **모든 프로세스**에 인젝션을 하기때문에 원�
 
 SetWindowsHookEx 를 호출하는데 실제로 Window Hooking 을 이용하면 키보드 후킹, 마우스 후킹, 윈도우 관리 후킹등 다양한 일을 할 수 있는데 SetWindowsHookEx MSDN 을 한번 훑어보면 간단한 예제들이 있다. 여기서는 Windows Hooking 를 이용하기 위한것이 아니라 단순히 부가효과인 모든 프로세스에 인젝션하기 위해서이므로 다른작업은 하지 않는다.
 
-```x86asm
+```nasm
 .686
 .model flat, stdcall
 option casemap:none
@@ -191,9 +191,9 @@ EndHook endp
 end DllEntry
 ```
 
-`.if reason==DLL_PROCESS_ATTACH` 앞서 살펴본적이 있다. DLL이 프로세스에 로드되었을 때 (인젝션) 를 의미한다. DLL\_PROCESS\_DETACH 는 언로드 될 때를 의미한다.
+`.if reason==DLL_PROCESS_ATTACH` 앞서 살펴본적이 있다. DLL이 프로세스에 로드되었을 때 (인젝션) 를 의미한다. DLL_PROCESS_DETACH 는 언로드 될 때를 의미한다.
 
-```x86asm
+```nasm
 push hInstance
 pop hGlobalModule
 ```
@@ -215,9 +215,9 @@ GetMsgProc endp
 
 SetWindowsHookEx 함수에 이용되는 함수이다. 후킹의 정보가 넘어오는 함수인데 여기선 후킹을 사용하기위해 쓰인것이 아니므로 아무런 동작으로 하지 않고 기본동작만 하고있다.
 
-`invoke SetWindowsHookEx, WH_CBT, addr GetMsgProc, hGlobalModule, NULL` SetWindowsHookEx 를 호출한다. WH\_CBT 후킹을 걸었는데 윈도우와 관련된(생성/소멸/창크기등)내용을 후킹할때 사용한다. 여기서는 큰 의미는 없다. 다만 DLL이 올라가는 시점때문에 WH\_CBT, WH\_GETMESSAGE정도만 사용한다. (WH\_KEYBOARD를 사용했을경우에는 해당 프로세스에서 키보드를 눌러야 DLL이 삽입된다)
+`invoke SetWindowsHookEx, WH_CBT, addr GetMsgProc, hGlobalModule, NULL` SetWindowsHookEx 를 호출한다. WH_CBT 후킹을 걸었는데 윈도우와 관련된(생성/소멸/창크기등)내용을 후킹할때 사용한다. 여기서는 큰 의미는 없다. 다만 DLL이 올라가는 시점때문에 WH_CBT, WH_GETMESSAGE정도만 사용한다. (WH_KEYBOARD를 사용했을경우에는 해당 프로세스에서 키보드를 눌러야 DLL이 삽입된다)
 
-`invoke UnhookWindowsHookEx, hCBTHook` 윈도우 후킹을 해제한다. 이때 모든 프로세스에 인젝션되었던 mydll.dll 들이 언로드(DLL\_PROCESS\_DETACH) 된다.
+`invoke UnhookWindowsHookEx, hCBTHook` 윈도우 후킹을 해제한다. 이때 모든 프로세스에 인젝션되었던 mydll.dll 들이 언로드(DLL_PROCESS_DETACH) 된다.
 
 **dll.def**
 

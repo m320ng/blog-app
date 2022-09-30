@@ -1,11 +1,11 @@
 ---
-title: "[python] huge file patch"
-date: "2016-10-05"
-categories: 
-  - "code"
-tags: 
-  - "python"
-  - "file-patch"
+title: '[python] huge file patch'
+date: '2016-10-05'
+categories:
+  - 'code'
+tags:
+  - 'python'
+  - 'file-patch'
 ---
 
 파이썬 연습용.
@@ -20,7 +20,7 @@ PySide, pywin등 좋은 라이브러리도 많아서 c++/mfc 류의 프로그래
 
 python source
 
-```
+```python
 # -*- coding: utf-8 -*-
 import sys
 import time

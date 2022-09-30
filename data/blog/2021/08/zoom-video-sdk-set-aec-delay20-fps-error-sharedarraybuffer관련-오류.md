@@ -1,10 +1,10 @@
 ---
-title: "zoom video sdk \"set aec delay20\" \"fps error\" SharedArrayBuffer관련 오류"
-date: "2021-08-24"
-categories: 
-  - "code"
-tags: 
-  - "zoom"
+title: 'zoom video sdk "set aec delay20" "fps error" SharedArrayBuffer관련 오류'
+date: '2021-08-24'
+categories:
+  - 'code'
+tags:
+  - 'zoom'
 ---
 
 ## 관련 zoom document 내용
@@ -25,9 +25,8 @@ SharedArrayBuffer on Chrome desktop requires cross-origin isolation starting fro
 
 해당웹페이지에서 개발자모드(F12) 콘솔에서 간단히 확인할 수 있다.
 
-```
-typeof SharedArrayBuffer ==='function'
-> false
+```js
+typeof SharedArrayBuffer === 'function' > false
 ```
 
 ## 해결방법 1 : COOP, COEP 설정
@@ -43,15 +42,15 @@ typeof SharedArrayBuffer ==='function'
 
 zoom video sdk react 샘플 config-overrides.js addDevServerCOOPReponseHeader 참조
 
-```
+```js
 const addDevServerCOOPReponseHeader = (config) => {
   config.headers = {
     ...config.headers,
     'Cross-Origin-Embedder-Policy': 'require-corp',
-    'Cross-Origin-Opener-Policy': 'same-origin'
-  };
-  return config;
-};
+    'Cross-Origin-Opener-Policy': 'same-origin',
+  }
+  return config
+}
 ```
 
 이 방법은 COEP가 require-corp로 설정되서 외부 스크립트를 사용할때는 문제가 되기도 한다.
@@ -72,13 +71,16 @@ SharedArrayBuffers in non-isolated pages on Desktop platforms > REGISTER
 
 - meta 태그
 
-```
-<meta http-equiv="origin-trial" content="**insert your token as provided in the developer console**">
+```html
+<meta
+  http-equiv="origin-trial"
+  content="**insert your token as provided in the developer console**"
+/>
 ```
 
 - nginx 설정
 
-```
+```conf
 add_header Origin-Trial **token as provided in the developer console**
 ```
 
@@ -86,14 +88,12 @@ add_header Origin-Trial **token as provided in the developer console**
 
 zoom video sdk react 샘플 config-overrides.js addDevServerCOOPReponseHeader 참조
 
-```
+```js
 const addDevServerCOOPReponseHeader = (config) => {
   config.headers = {
     ...config.headers,
-    'Origin-Trial':
-      '**token as provided in the developer console**',
-  };
-  return config;
-};
-
+    'Origin-Trial': '**token as provided in the developer console**',
+  }
+  return config
+}
 ```

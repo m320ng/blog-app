@@ -1,23 +1,19 @@
 ---
-title: "LoadLibrary 구현코드"
-date: "2013-08-10"
-categories: 
-  - "memo"
-tags: 
-  - "assembly"
+title: 'LoadLibrary 구현코드'
+date: '2013-08-10'
+categories:
+  - 'memo'
+tags:
+  - 'assembly'
 ---
 
 # 구글메모 _2010.2.10_
 
 kernel.dll basic exception handler 핸들러 주소를 이용해서 kernel.dll 주소를 얻는거 같은데
 
-내 기억으로는 7부는 안될듯??
-
-어딘가 새로짠게 있을텐데..
-
-```
+```nasm
 #!asm
-mov eax, fs:[0] 
+mov eax, fs:[0]
 mov ecx, dword ptr [eax]
 cmp ecx, 0FFFFFFFFh
 jnz short -8

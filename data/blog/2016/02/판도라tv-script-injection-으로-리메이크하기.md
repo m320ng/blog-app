@@ -54,7 +54,7 @@ flash player내부의 타임라인으로 이동하지 못하도록 타임라인�
 
 hosts파일 변경법
 
-```
+```bash
 notepad C:\Windows\System32\drivers\etc\hosts
 ```
 
@@ -74,7 +74,7 @@ hosts에서 prism.pandora.tv를 내 서버의 아이피로 연결하였다.
 
 이제 준비가 되었으니 스크립트를 짜보도록하자.
 
-```
+```js
 if (!window.pandoraInj) {
     window.pandoraInj = true;
     jQuery(document).ready(function() {
