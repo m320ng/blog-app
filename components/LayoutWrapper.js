@@ -57,7 +57,7 @@ const LayoutWrapper = ({ children }) => {
           ))}
           <li className="hidden sm:block" key={'all'}>
             <Link
-              class="inline-block rounded border border-blue-500 bg-blue-500 py-1 px-3 text-white"
+              className="inline-block rounded border border-blue-500 bg-blue-500 py-1 px-3 text-white"
               href="/blog"
             >
               all

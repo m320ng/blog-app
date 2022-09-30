@@ -74,7 +74,6 @@ const MobileNav = () => {
                   onClick={onToggleNav}
                 >
                   {link.title}
-                  {console.log('link', link)}
                 </Link>
               </div>
               {link.title == 'Categories' && (
@@ -82,7 +81,7 @@ const MobileNav = () => {
                   {['code', 'hacking', 'tip', '3dprint', 'hardware', 'etc', 'memo'].map((cate) => (
                     <div className="px-16 py-4" key={cate}>
                       <Link
-                        class="text-xl font-bold tracking-widest text-gray-600 dark:text-gray-100"
+                        className="text-xl font-bold tracking-widest text-gray-600 dark:text-gray-100"
                         href={`/categories/${cate}`}
                       >
                         {cate}
