@@ -3,7 +3,7 @@ const siteMetadata = {
   author: 'MKSong',
   headerTitle: '{}.cook(c, c#, java, php, js, asm);',
   description: '정리, 공부, 연습, 즐겨찾기',
-  language: 'en-us',
+  language: 'ko-kr',
   theme: 'system', // system, dark or light
   siteUrl: 'https://blog.heyo.me',
   siteRepo: 'https://github.com/m320ng/blog-app',
@@ -16,7 +16,7 @@ const siteMetadata = {
   facebook: 'https://facebook.com',
   youtube: 'https://youtube.com',
   linkedin: 'https://www.linkedin.com',
-  locale: 'en-US',
+  locale: 'ko-KR',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

@@ -4,6 +4,7 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { getAllFilesFrontMatter } from '@/lib/mdx'
 import formatDate from '@/lib/utils/formatDate'
+import { getAllCategories } from '@/lib/categories'
 
 import NewsletterForm from '@/components/NewsletterForm'
 
@@ -11,11 +12,14 @@ const MAX_DISPLAY = 5
 
 export async function getStaticProps() {
   const posts = await getAllFilesFrontMatter('blog')
+  const filteredPosts = posts.filter((p) => p.categories?.indexOf('memo') == -1)
 
-  return { props: { posts } }
+  const categories = await getAllCategories('blog')
+
+  return { props: { posts: filteredPosts, categories } }
 }
 
-export default function Home({ posts }) {
+export default function Home({ posts, categories }) {
   return (
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
