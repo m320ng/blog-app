@@ -1,8 +1,8 @@
 ---
-title: "포고플러그 (POGO-B01) 데비안(wheezy) 설치"
-date: "2014-08-19"
-categories: 
-  - "memo"
+title: '포고플러그 (POGO-B01) 데비안(wheezy) 설치'
+date: '2014-08-19'
+categories:
+  - 'memo'
 ---
 
 ## 0\. arch-linux를 설치후 arch-linux 에서 debian을 설치한다. arch-linux가 설치될 usb메모리, debian이 설치될 usb메모리 이렇게 두개가 필요하다.
@@ -11,13 +11,13 @@ categories:
 
 [http://archlinuxarm.org/platforms/armv6/pogoplug-v3oxnas-eol](http://archlinuxarm.org/platforms/armv6/pogoplug-v3oxnas-eol) 참고
 
-> 1) my.pogoplug.com 에 포고플러그를 등록하고 SSH를 활성화시킨다.  
-> 2) usb메모리를 꽂는다. (난 뒤쪽 두번째 슬롯에 꽂았고 /dev/sda로 잡혔다.)  
-> 3) 6번부터 명령어를 쭉 따라가면됨
+> 1. my.pogoplug.com 에 포고플러그를 등록하고 SSH를 활성화시킨다.
+> 2. usb메모리를 꽂는다. (난 뒤쪽 두번째 슬롯에 꽂았고 /dev/sda로 잡혔다.)
+> 3. 6번부터 명령어를 쭉 따라가면됨
 
 ## 2\. debian 설치. 아래 링크에서 pogoplug에 맞게 구성된 debian wheezy를 다운받는다.
 
-[http://pogoplug.cwsurf.de/forum/viewtopic.php?f=5&t=114&sid=c7624ebf7b6a84be9875ccd1bda50d75](http://pogoplug.cwsurf.de/forum/viewtopic.php?f=5&t=114&sid=c7624ebf7b6a84be9875ccd1bda50d75) -> debian-wheezy-pogoplugv3pro-shv.1.clean.tar.gz
+[http://pogoplug.cwsurf.de/forum/viewtopic.php?f=5&t=114&sid=c7624ebf7b6a84be9875ccd1bda50d75](http://pogoplug.cwsurf.de/forum/viewtopic.php?f=5&t=114&sid=c7624ebf7b6a84be9875ccd1bda50d75) {'->'} debian-wheezy-pogoplugv3pro-shv.1.clean.tar.gz
 
 > 다운받은 파일을 포고플러그 home(~) path에 넣는다. 1) debian을 설치할 usb를 꽂는다.  
 > 2) usb ext3로 포맷

@@ -9,13 +9,14 @@ const DEFAULT_LAYOUT = 'PostLayout'
 
 export async function getStaticPaths() {
   const posts = getFiles('blog')
-  console.log('posts', posts.filter(p => ['.jpg', '.png'].indexOf(path.extname(p)) != -1).map(p => path.extname(p)));
   return {
-    paths: posts.filter(p => ['.md', '.mdx'].indexOf(path.extname(p)) != -1).map((p) => ({
-      params: {
-        slug: formatSlug(p).split('/'),
-      },
-    })),
+    paths: posts
+      .filter((p) => ['.md', '.mdx'].indexOf(path.extname(p)) != -1)
+      .map((p) => ({
+        params: {
+          slug: formatSlug(p).split('/'),
+        },
+      })),
     fallback: false,
   }
 }

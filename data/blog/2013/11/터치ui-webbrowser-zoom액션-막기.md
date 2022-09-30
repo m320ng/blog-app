@@ -1,10 +1,11 @@
 ---
-title: "터치UI webbrowser Zoom액션 막기"
-date: "2013-11-29"
-categories: 
-  - "tip"
+title: '터치UI webbrowser Zoom액션 막기'
+date: '2013-11-29'
+categories:
+  - 'tip'
 ---
 
+```
 html { -ms-touch-action: pan-x pan-y; }
 
 html { -ms-touch-action:none; }
@@ -18,6 +19,7 @@ html, \*, body, div, table { -ms-touch-action:none !important; }
 _in script_
 
 document.body.setAttribute("style","-ms-touch-action: none;");
+```
 
 그외
 

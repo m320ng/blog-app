@@ -1,9 +1,9 @@
 ---
-title: "판도라TV script injection 으로 리메이크하기"
-date: "2016-02-27"
-categories: 
-  - "code"
-  - "hacking"
+title: '판도라TV script injection 으로 리메이크하기'
+date: '2016-02-27'
+categories:
+  - 'code'
+  - 'hacking'
 ---
 
 최근에 판도라TV([http://pandora.tv](http://pandora.tv))라는 곳을 알게되었다.
@@ -70,7 +70,7 @@ hosts에서 prism.pandora.tv를 내 서버의 아이피로 연결하였다.
 
 서버내에서는 간단하게 node.js express로 웹서버를 구현했다.
 
-/pandora/channel/channel\_middle로 접근했을때만 내 스크립트를 출력하고 그외에 파일은 원래의 prism.pandora.tv로 연결하면 되겠다.
+/pandora/channel/channel_middle로 접근했을때만 내 스크립트를 출력하고 그외에 파일은 원래의 prism.pandora.tv로 연결하면 되겠다.
 
 이제 준비가 되었으니 스크립트를 짜보도록하자.
 
@@ -352,12 +352,12 @@ if (!window.pandoraInj) {
             var width = w_width - (pad * 2);
             var height = 30;
             window.conroller.css({
-                'z-index':'2000', 
-                position:'absolute', 
-                top:(offset.top + w_height - height) + 'px', 
-                left:(offset.left + pad) + 'px', 
-                width:width + 'px', 
-                height:height + 'px', 
+                'z-index':'2000',
+                position:'absolute',
+                top:(offset.top + w_height - height) + 'px',
+                left:(offset.left + pad) + 'px',
+                width:width + 'px',
+                height:height + 'px',
                 background:'#c8c8c8'
             });
 
@@ -366,31 +366,31 @@ if (!window.pandoraInj) {
 
             var timeline = jQuery('#controller-timeline');
             timeline.css({
-                position:'absolute', 
-                top:'12px', 
-                left:pad + 'px', 
-                width:width + 'px', 
-                height:'6px', 
+                position:'absolute',
+                top:'12px',
+                left:pad + 'px',
+                width:width + 'px',
+                height:'6px',
                 background:'#444'
             });
 
             var dot = jQuery('#controller-dot');
             dot.css({
-                position:'absolute', 
-                left:(pad-7)+'px', 
-                top:'2px', 
-                width:'14px', 
-                height:'26px', 
+                position:'absolute',
+                left:(pad-7)+'px',
+                top:'2px',
+                width:'14px',
+                height:'26px',
                 background:'#ffff00'
             });
 
             var label = jQuery('#controller-label');
             label.css({
-                position:'absolute', 
-                top:'-20px', 
-                left:'5px', 
-                width:'30px', 
-                display:'inline-block', 
+                position:'absolute',
+                top:'-20px',
+                left:'5px',
+                width:'30px',
+                display:'inline-block',
                 'line-height':'9px',
                 padding:'1px',
                 'text-align':'center',
@@ -401,11 +401,11 @@ if (!window.pandoraInj) {
 
             var track = jQuery('#controller-track');
             track.css({
-                position:'absolute', 
-                top:'-35px', 
-                left:'5px', 
-                width:'30px', 
-                display:'inline-block', 
+                position:'absolute',
+                top:'-35px',
+                left:'5px',
+                width:'30px',
+                display:'inline-block',
                 'line-height':'9px',
                 padding:'1px',
                 'text-align':'center',
@@ -481,7 +481,7 @@ if (!window.pandoraInj) {
 
 [![player1](images/player1.png)](http://note.heyo.me/wp-content/uploads/2016/02/player1.png)
 
-방향키와 <>키로 5초 앞으로가기 뒤로가기가 실행된다.
+방향키와 {'<>'}키로 5초 앞으로가기 뒤로가기가 실행된다.
 
 F나 Enter를 누르면 현재창에 맞게 커진다. 타임라인을 구현했다.
 
