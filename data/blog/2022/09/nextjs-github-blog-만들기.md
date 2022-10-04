@@ -10,19 +10,26 @@ tags:
 
 트렌드에 맞춰 github 을 이용한 블로그를 만들어 보자.\
 cms는 github를 이용하고 블로그 서비스는 next.js를 사용한다.\
-적당한 next.js blog starter를 수정해서 만들어본다(많다;)
+적당한 next.js blog starter를 수정해서 만들어본다(많다;)\
+그리고 기존의 wordpress 블로그도 이전해본다
 
 ## 장단점
 
 - 장점
 
 1. github를 headless cms처럼 이용하고 서비스는 vercel를 이용하므로 지금처럼 별도로 서버호스팅(웹호스팅)을 할 필요가 없다.
-2. ssg로 서비스되는 만큼 wordpress 대비 훨씬 빠르다
+2. ssg로 서비스되는 만큼 wordpress 대비 훨씬 빠르다.
 
 - 단점
 
-1. wordpress의 다양한 플러그인을 못씀
-2. 관리자 웹페이지에서 글을 뚝딱뚝딱 못씀
+1. wordpress의 다양한 플러그인을 못씀.
+2. 관리자 웹페이지에서 글을 뚝딱뚝딱 못씀.
+
+- 장점2
+
+1. md,mdx(markdown)형식의 파일 vscode에서 편집하기 너무 편하다.
+   작성중에도 code format, syntax highlight등이 지원되고
+   프리뷰 split해서 띄워놓으면 프리뷰도 실시간으로 볼 수 있다.
 
 ## 순서
 
@@ -228,8 +235,8 @@ yarn copyimage
 
 vercel에서 github repository를 연결하면 웹서비스로 바로 볼 수 있다.
 
-https://note.heyo.me/blog/2022/02/3d프린터-업그레이드-근황.mdx
-https://github.com/m320ng/blog-app/blob/master/data/blog/2022/02/3d프린터-업그레이드-근황.mdx.mdx
+https://note.heyo.me/blog/2022/02/3d프린터-업그레이드-근황
+https://github.com/m320ng/blog-app/blob/master/data/blog/2022/02/3d프린터-업그레이드-근황.mdx
 
 ## 4. 블로그 프로그램 수정
 
