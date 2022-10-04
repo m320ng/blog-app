@@ -29,5 +29,9 @@ export default function OldPost({ slug, old }) {
   if (typeof window !== 'undefined') {
     router.push('/blog/' + slug)
   }
-  return <>[/blog/{slug}] 으로 이동합니다</>
+  return (
+    <>
+      <a href={`/blog/${slug}`}>[/blog/{slug}]</a> 으로 이동합니다
+    </>
+  )
 }
