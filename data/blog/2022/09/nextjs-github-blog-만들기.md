@@ -245,5 +245,6 @@ https://github.com/m320ng/blog-app/blob/master/data/blog/2022/02/3d프린터-업
 1. wordpress는 카테고리가 있었는데 여긴 없다. 추가해준다.
 2. 카테고리 memo는 전체 목록, 최근 목록에서 제외한다.
 3. 카테고리 메뉴를 추가한다.
+4. wordpress 과거링크를 redirect한다. `/[slug]` -> `/blog/년/월/[slug]`
 
 [수정한 github](https://github.com/m320ng/blog-app)
