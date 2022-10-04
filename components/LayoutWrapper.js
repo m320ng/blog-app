@@ -48,7 +48,7 @@ const LayoutWrapper = ({ children }) => {
           {['code', 'hacking', 'tip', '3dprint', 'hardware', 'etc', 'memo'].map((cate) => (
             <li className="hidden sm:block" key={cate}>
               <Link
-                class="inline-block rounded border border-white py-1 px-3 text-blue-500 hover:border-gray-200 hover:bg-gray-200"
+                className="inline-block rounded border border-white py-1 px-3 text-blue-500 hover:border-gray-200 hover:bg-gray-200"
                 href={`/categories/${cate}`}
               >
                 {cate}

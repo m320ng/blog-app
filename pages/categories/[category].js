@@ -10,13 +10,14 @@ const root = process.cwd()
 
 export async function getStaticPaths() {
   const categories = await getAllCategories('blog')
+  const paths = Object.keys(categories).map((category) => ({
+    params: {
+      category,
+    },
+  }))
 
   return {
-    paths: Object.keys(categories).map((category) => ({
-      params: {
-        category,
-      },
-    })),
+    paths,
     fallback: false,
   }
 }

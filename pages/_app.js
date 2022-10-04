@@ -23,9 +23,13 @@ export default function App({ Component, pageProps }) {
       </Head>
       {isDevelopment && isSocket && <ClientReload />}
       <Analytics />
-      <LayoutWrapper>
+      {pageProps._layout === false ? (
         <Component {...pageProps} />
-      </LayoutWrapper>
+      ) : (
+        <LayoutWrapper>
+          <Component {...pageProps} />
+        </LayoutWrapper>
+      )}
     </ThemeProvider>
   )
 }
