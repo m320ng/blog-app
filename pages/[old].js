@@ -20,6 +20,11 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const allPosts = await getAllFilesFrontMatter('blog')
   const postIndex = allPosts.findIndex((post) => post.slug.split('/').pop() === params.old)
+  if (postIndex == -1) {
+    return {
+      notFound: true,
+    }
+  }
   const post = allPosts[postIndex]
   return { props: { _layout: false, slug: post.slug, old: params.old } }
 }
