@@ -44,7 +44,7 @@ const LayoutWrapper = ({ children }) => {
             <MobileNav />
           </div>
         </header>
-        <ul className="flex items-center text-base">
+        <ul className="flex hidden items-center text-base">
           {['code', 'hacking', 'tip', '3dprint', 'hardware', 'etc', 'memo'].map((cate) => (
             <li className="hidden sm:block" key={cate}>
               <Link
